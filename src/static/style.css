@@ -1,0 +1,189 @@
+@import url(https://fonts.googleapis.com/css?family=Exo:100);
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Poppins:wght@500&display=swap');
+
+
+
+/* ... existing styles ... */
+
+/* Right side panel */
+.info-links {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  list-style: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 5px 0px 0px 5px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.info-links li {
+  margin: 10px 0;
+}
+
+.info-links li a {
+  display: block;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s ease-in-out;
+
+}
+
+.info-links li a:hover {
+  transform: translateX(-10px);
+  background: rgba(150, 150, 150, 0.4); /* Adjust to match your theme */
+}
+
+/* Additional styles to prevent overlap with the fixed panels */
+.container {
+  padding-left: 100px; /* Adjust based on the width of the left panel */
+  padding-right: 100px; /* Adjust based on the width of the right panel */
+}
+
+
+
+.social-links {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0 5px 5px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.social-links li {
+  margin: 10px 0;
+}
+
+.social-links li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  display: block;
+  transition: transform 0.2s ease-in-out;
+}
+
+.social-links li a:hover {
+  transform: translateX(-10px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.social-links i {
+  width: 20px;
+  margin-right: 8px;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+}
+
+
+.welcome-container {
+  text-align: center;
+  margin: 2rem;
+}
+
+.bio-box {
+  background: #fff; /* Change this to match your theme */
+  color: #333; /* Change this for the text color you prefer */
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block; /* Keeps the width to the content size */
+  max-width: 600px; /* Or whatever max-width you prefer */
+}
+
+.bio-box p {
+  margin: 0;
+}
+
+/* Add this if you want a little animation when the bio appears */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bio-box {
+  animation: fadeIn 1s ease-out;
+}
+
+@-webkit-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-webkit-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+/* Main styles */
+body {
+  margin-top: 13.5rem;
+  color: #999;
+  font: 400 16px/1.5 exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
+  text-align: center;
+  /* img size is 50x50 */
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC") repeat 0 0;
+  -webkit-animation: bg-scrolling-reverse 0.92s infinite;
+  /* Safari 4+ */
+  -moz-animation: bg-scrolling-reverse 0.92s infinite;
+  /* Fx 5+ */
+  -o-animation: bg-scrolling-reverse 0.92s infinite;
+  /* Opera 12+ */
+  animation: bg-scrolling-reverse 0.92s infinite;
+  /* IE 10+ */
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  animation-timing-function: linear;
+}
+
+

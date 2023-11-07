@@ -1,4 +1,3 @@
-
 export default class Vortex {
   constructor(canvas, gravitationalConstant) {
     this.gravitationalConstant = gravitationalConstant;
@@ -19,12 +18,12 @@ export default class Vortex {
       if (i%2) {
        x = Math.random() * this.canvas.width/2;
        y = Math.random() * this.canvas.height/2;
-      color = '#1c2943'
+      color = 'rgba(20,20,20,0.5)';
       }
       else {
         x = Math.random() * this.canvas.width + this.canvas.width/2;
        y = Math.random() * this.canvas.height + this.canvas.height/2;
-        color = '#f0583c'
+        color = 'rgba(20,20,20,0.5)';
       }
       const dx = this.canvas.width / 2 - x;
       const dy = this.canvas.height / 2 - y;
@@ -58,7 +57,6 @@ export default class Vortex {
     this.ctx.stroke();
   }
 
-// this.drawOrbit(this.canvas.width / 2, this.canvas.height / 2, Math.sqrt((particle.x - this.canvas.width / 2) ** 2 + (particle.y - this.canvas.height / 2) ** 2), 'rgba(169, 214, 229,0.0)');
 
   animate() {
     requestAnimationFrame(() => this.animate());
@@ -104,4 +102,3 @@ export default class Vortex {
     });
   }
 }
-
