@@ -9,7 +9,24 @@ from flask import render_template,request,jsonify
 def home_page():
     return render_template('index.html')
 
+@app.route('/resume')
+def resume_page():
+    return render_template('default.html')
 
-if __name__ == '__main__':
-    pass
+@app.route('/blog')
+def blog_page():
+    return render_template('default.html')
+
+@app.route('/projects')
+def projects_page():
+    return render_template('default.html')
+
+@app.route('/tools')
+def tools_page():
+    return render_template('default.html')
+
+@app.route('/dev')
+def dev_page():
+    return render_template('default.html')
+
  
