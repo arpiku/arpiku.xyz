@@ -2,7 +2,7 @@ import random
 import json
 
 from app import app
-from flask import render_template,request,jsonify
+from flask import render_template,request,jsonify,redirect, send_file
 
 
 @app.route('/')
@@ -11,11 +11,15 @@ def home_page():
 
 @app.route('/resume')
 def resume_page():
-    return render_template('default.html')
+    return send_file('static/Resume.pdf')
+
+@app.route('/main-btn')
+def digital_garden_redirect():
+    return redirect('https://arpiku-notes-dg.vercel.app/')
 
 @app.route('/blog')
 def blog_page():
-    return render_template('default.html')
+    return redirect('https://arpiku-notes-dg.vercel.app/')
 
 @app.route('/projects')
 def projects_page():

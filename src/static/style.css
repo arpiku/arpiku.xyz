@@ -90,18 +90,34 @@
 
 .welcome-container {
   text-align: center;
-  margin: 2rem;
+  font-size: 2em;
+  margin: 1rem;
 }
 
 .bio-box {
-  background: #fff; /* Change this to match your theme */
-  color: #333; /* Change this for the text color you prefer */
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff; /* Change this for the text color you prefer */
+  font-weight : bolder;
+  font-size : 0.8em;
   margin-top: 2rem;
   padding: 2rem;
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: inline-block; /* Keeps the width to the content size */
   max-width: 600px; /* Or whatever max-width you prefer */
+}
+
+
+.main-btn {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff; /* Change this for the text color you prefer */
+  font-weight : bolder;
+  font-size : 0.8em;
+  margin-top: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block; /* Keeps the width to the content size */
+  max-width: 100px; /* Or whatever max-width you prefer */
 }
 
 .bio-box p {
