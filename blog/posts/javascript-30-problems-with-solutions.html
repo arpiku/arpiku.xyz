@@ -19,6 +19,15 @@
     </svg>
   </button>
   
+  <button class="gol-toggle" id="gol-toggle" aria-label="Toggle background animation">
+    <svg class="play-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+    <svg class="pause-icon" viewBox="0 0 24 24">
+      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+    </svg>
+  </button>
+  
   <div class="page-content">
     <a href="../index.html" class="back-link">← Back to Blog</a>
     
@@ -930,6 +939,30 @@ ArrayWrapper.prototype.toString = function() {
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
         updateIcon(next);
+      });
+      
+      const golToggle = document.getElementById('gol-toggle');
+      const playIcon = golToggle.querySelector('.play-icon');
+      const pauseIcon = golToggle.querySelector('.pause-icon');
+      let golRunning = true;
+      
+      function updateGolIcon(running) {
+        if (running) {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+        } else {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        }
+      }
+      
+      golToggle.addEventListener('click', () => {
+        if (window.toggleGoL) {
+          golRunning = window.toggleGoL();
+        } else {
+          golRunning = !golRunning;
+        }
+        updateGolIcon(golRunning);
       });
     })();
   </script>

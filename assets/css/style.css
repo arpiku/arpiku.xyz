@@ -106,6 +106,35 @@ body::before {
   fill: var(--red-bright);
 }
 
+.gol-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 4.5rem;
+  z-index: 100;
+  background: var(--content-bg);
+  border: 2px solid var(--gray);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gol-toggle:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 15px rgba(204, 34, 34, 0.3);
+}
+
+.gol-toggle svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--white);
+  transition: fill 0.2s ease;
+}
+
+.gol-toggle:hover svg {
+  fill: var(--red-bright);
+}
+
 .content {
   position: relative;
   z-index: 1;

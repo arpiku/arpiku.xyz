@@ -124,6 +124,8 @@
   let tex = [null, null];
   let fbo = [null, null];
   let current = 0;
+  let isRunning = true;
+  let animationId = null;
 
   function createTexture(w, h, data) {
     const t = gl.createTexture();
@@ -206,8 +208,16 @@
   }
 
   let frameCount = 0;
+  let lastTime = 0;
 
   function animate(time) {
+    animationId = requestAnimationFrame(animate);
+    
+    if (!isRunning) return;
+    
+    const dt = time - lastTime;
+    lastTime = time;
+    
     frameCount++;
     
     if (frameCount % 4 === 0) {
@@ -215,7 +225,6 @@
     }
     
     display(time / 1000);
-    requestAnimationFrame(animate);
   }
 
   function resize() {
@@ -225,6 +234,25 @@
   window.addEventListener('resize', resize);
   resize();
   requestAnimationFrame(animate);
+  
+  window.toggleGoL = function(action) {
+    if (action === 'stop') {
+      isRunning = false;
+    } else if (action === 'start') {
+      isRunning = true;
+      lastTime = performance.now();
+    } else {
+      isRunning = !isRunning;
+      if (isRunning) lastTime = performance.now();
+    }
+    return isRunning;
+  };
+  
+  window.resetGoL = function() {
+    resize();
+    isRunning = true;
+    lastTime = performance.now();
+  };
   
   console.log('Game of Life initialized:', gridW, 'x', gridH);
 })();

@@ -7,6 +7,28 @@
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="icon" href="../assets/logo.png">
   <style>
+    body.fullscreen {
+      background: var(--black);
+    }
+    
+    body.fullscreen::before {
+      display: none;
+    }
+    
+    body.fullscreen #gol-canvas {
+      display: none;
+    }
+    
+    .fullscreen .page-content {
+      background: transparent;
+      min-height: 100vh;
+      padding-top: 4rem;
+    }
+    
+    body.fullscreen {
+      overflow: hidden;
+    }
+    
     .page-content {
       position: relative;
       z-index: 1;
@@ -257,7 +279,7 @@
     }
   </style>
 </head>
-<body>
+<body class="fullscreen">
   <canvas id="gol-canvas"></canvas>
   
   <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
