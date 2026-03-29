@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pretty Printing Interactive List Haskell | arpiku</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="icon" href="../../assets/logo.png">
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="../index.html" class="back-link">← Back to Blog</a>
+    
+    <article>
+      <header class="post-header">
+        <div class="post-date">2024-08-05 20:45:00</div>
+        <h1 class="post-title">Pretty Printing Interactive List Haskell</h1>
+        <div class="post-tags">
+          <span class="post-tag">Haskell</span> <span class="post-tag">Functional Programming</span>
+        </div>
+      </header>
+      
+      <div class="post-body">
+        <p>The standard Haskell installation with ghci actually brings a lot of goodies alongside, one of these<br />
+libraries in ANSI console library, which provides tools to sylize the terminal output. Following are a few simple example.</p>
+<p>[img1] (/assets/ar1/img1.png)</p>
+<p>Let's start with some simple code that would let us provide a set of settings and a string to<br />
+print to the terminal</p>
+<pre class="codehilite"><code class="language-haskell">prettyPrint sgrs str = setSGR sgrs &gt;&gt; putStr str &gt;&gt; setSGR [Reset] &gt;&gt; putStrLn &quot;&quot;
+</code></pre>
+
+<p>[img2] (/assets/ar1/img2.png)</p>
+<p>This works for a single string, but what about a list of strings?</p>
+<p>Let's first write a function that will give us some formats to map over string, depending on the<br />
+length of the string</p>
+<pre class="codehilite"><code class="language-haskell">getSGRList n
+            | n &lt;= 0 = []
+            | n == 1 = [selected, alt1]
+            | otherwise = selected : concat (replicate (n `div` 2) [alt1, alt2])
+</code></pre>
+
+<p>and then we can simple write a function as follows</p>
+<pre class="codehilite"><code class="language-haskell">printSelectableList sgrs xs = zipWithM_ prettyPrint sgrs xs
+</code></pre>
+
+<p>where sgrs can be generated using getSGRList by just passing the length of the string.<br />
+Combining the above ideas we get something like this</p>
+<p>[img3] (/assets/ar1/img3.png)</p>
+<p>We can use and modify the code from <code>https://stackoverflow.com/questions/23068218/haskell-read-raw-keyboard-input/38553473#38553473</code><br />
+to handle inputs alongside adding two funtions to rotate the currently selected row</p>
+<pre class="codehilite"><code class="language-haskell">getKey :: IO [Char]
+getKey = reverse &lt;$&gt; getKey' &quot;&quot;
+  where getKey' chars = do
+          char &lt;- getChar
+          more &lt;- hReady stdin
+          (if more then getKey' else return) (char:chars)
+
+
+rotateUp [x] = [x]
+rotateUp (x:xs) = xs ++ [x]
+
+
+rotateDown [x] = [x]
+rotateDown xs = [last xs] ++ init xs
+
+menuController (sgrs, strs) = do
+  clearScreen
+  hSetBuffering stdin NoBuffering
+  hSetEcho stdin False
+  printSelectableList sgrs strs
+  key &lt;- getKey
+  when (key /= &quot;\ESC&quot;) $ do
+    case key of
+      &quot;\ESC[A&quot; -&gt; menuController (rotateUp sgrs, strs)
+      &quot;\ESC[B&quot; -&gt; menuController (rotateDown sgrs, strs)
+      _        -&gt; return ()
+    menuController (sgrs, strs)
+</code></pre>
+
+<p>[img4] (/assets/ar1/img4.png)<br />
+[img5] (/assets/ar1/img5.png)</p>
+<p>Given this, we can modify the above code to result in particular behaviour, like returning the<br />
+number of the currently 'green' row and using that information to perform some other task, hence<br />
+we got ourselves a rather simple interactive interface.</p>
+      </div>
+    </article>
+  </div>
+  
+  <script src="../../assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>

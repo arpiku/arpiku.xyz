@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For the love of Engineering | arpiku</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="icon" href="../../assets/logo.png">
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="../index.html" class="back-link">← Back to Blog</a>
+    
+    <article>
+      <header class="post-header">
+        <div class="post-date">2024-02-25 18:48:00</div>
+        <h1 class="post-title">For the love of Engineering</h1>
+        <div class="post-tags">
+          <span class="post-tag">Journal</span> <span class="post-tag">Blog</span>
+        </div>
+      </header>
+      
+      <div class="post-body">
+        <p>I remember the first time I learned about HTML. It was a book that I got from a friend, internet was something I knew about<br />
+but as a kid all of it was still a mystery. It was a simple book, standard course work for 10th standard students studying under <br />
+the central board of enducation in India, I was in 7th standard, had a potato PC, but the idea of being able to make this machine<br />
+display and do what I wish to was incredible! I read through the book in a few days, opened up the notepad, wrote some html and <br />
+opened the file using a browser.. and .. nothing?? The browser just displayed the html in text form, it didn't make sense, I tried<br />
+again, it didn't work. It was frustrating as hell! I tried and tried, changed the brower, changed the text editor but as a kid <br />
+I just didn't know what was going on, I thought perhaps the book is outdated or something. Later on, I was just messing around <br />
+on my grand dad's computer and I realised that every file for some reason have these weird ".txt", ".mp3", ".mp4" attached to <br />
+their name, and changing  it would change the behaviour. It clicked, the book suggested using notepad to edit the html file but <br />
+forget to mention the fact that you are supposed to save it with the correct extension.......</p>
+<p>It's been years since then and my love and curiosity for engineering has only increased over time, and almost everyday <br />
+I feel grateful to be born at a time when information that used to take decades to gather is just provided to me, <br />
+the sheer quantity of fun things to learn is overwhelming sometimes, but the beauty of it all is just too much for me to quit.</p>
+<p>The journey has defined the last decade of life and probably will the rest of it as well, I plan to embrace it to the fullest.</p>
+<p>For doing my part in creating a world with limitless possibilities for everyone, For the love of Engineering.</p>
+      </div>
+    </article>
+  </div>
+  
+  <script src="../../assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>

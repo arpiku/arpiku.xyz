@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 30 problems with solutions | arpiku</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="icon" href="../../assets/logo.png">
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="../index.html" class="back-link">← Back to Blog</a>
+    
+    <article>
+      <header class="post-header">
+        <div class="post-date">2024-02-27 15:45:00</div>
+        <h1 class="post-title">JavaScript 30 problems with solutions</h1>
+        <div class="post-tags">
+          <span class="post-tag">LeetCode</span> <span class="post-tag">JavaScript</span>
+        </div>
+      </header>
+      
+      <div class="post-body">
+        <h1>30 Days of JavaScript</h1>
+<p>So there is this study plan on leetcode titled "30 Days of JavaScript", it mostly comprises of simple problems that<br />
+focus on the functional nature of JavaScript. Following are the solutions to the listed problems along with a brief <br />
+discussion.</p>
+<h2>Create Hello World Function</h2>
+<pre class="codehilite"><code class="language-js">var createHelloWorld = function() {
+
+    return function(...args) {
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>In the above code a function is being declared as a 'var', this is because in <strong>functional programming paradigm, functions are first class objects</strong>.</li>
+<li>That means they can be thrown around to other funtions, can be mapped on other funtions, can be passed as a parameter to other funtions.</li>
+<li>In this the solution is rather simple.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">var createHelloWorld = function() {
+
+    return function(...args) { return &quot;Hello World&quot;;        
+    }
+};
+</code></pre>
+
+<h2>Counter</h2>
+<p>Now this problem is interesting, the solution looks like this </p>
+<pre class="codehilite"><code class="language-js">var createCounter = function(n) {
+    return function() {
+        return n++;
+    };
+};
+</code></pre>
+
+<ul>
+<li>The interesting part here is how n lives even though no memory got allocated explicitly to preserve it, this is called a <strong>closure</strong>, a function <br />
+returning a function, the ability for the inner function to maintain it's variable is a feature of JS closures.</li>
+<li>In Cpp similar behaviour would require us to somehow assign where the variable lives, as follows.</li>
+</ul>
+<pre class="codehilite"><code class="language-Cpp">#include&lt;iostream&gt;
+#include&lt;functional&gt;
+
+class Counter {
+private:
+  int _n;
+public:
+  Counter(int initValue) : _n(initValue) {} //Member init list
+
+  std::functiona&lt;int()&gt; createCounter() {
+  return [this]() -&gt; {return n++};
+  }
+};
+</code></pre>
+
+<ul>
+<li>See how an object exists that is getting passed to the inner function via "this", that's what closure behave like in JavaScript.</li>
+</ul>
+<h2>To Be Or Not To Be</h2>
+<ul>
+<li>There is an attempt to be philosophical here, I am gonna choose to be and solve this question.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {string} val
+ * @return {Object}
+ */
+var expect = function(val) {
+    // In JS we can treat functions as first class obejcts
+
+    return {
+        toBe: (cmp) =&gt; {
+            if(val !== cmp) throw new Error(&quot;Not Equal&quot;);
+            else return true;
+        },
+
+        notToBe: (val2) =&gt; {
+            if(val === val2) throw new Error(&quot;Equal&quot;);
+            else return true;
+        }
+    }
+
+};
+</code></pre>
+
+<ul>
+<li>The <strong>function returns an object of functions!</strong>, think about that.</li>
+<li>What is going on is that imagine the wrapping funtion to be object, one its on we have the "val", other values will be passed later on, what it is <br />
+returning is a object which is "aware" of the "val", and needs the other values to funtion (which we are passing in the calls).</li>
+</ul>
+<h2>Counter II</h2>
+<ul>
+<li>It's a combination of problems before, this time one particular value needs to stay constant and stored somewhere in order to be used later, so <br />
+we just create that variable and do exactly that.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {integer} init
+ * @return { increment: Function, decrement: Function, reset: Function }
+ */
+var createCounter = function(init) {
+    const initValue = init;
+
+    return {
+        increment: () =&gt; {return ++init;}, //The &quot;++&quot; is like C++
+        decrement: () =&gt; {return --init;},
+        reset: () =&gt; {
+            init = initValue;
+            return init}
+    }
+
+};
+
+/**
+ * const counter = createCounter(5)
+ * counter.increment(); // 6
+ * counter.reset(); // 5
+ * counter.decrement(); // 4
+ */
+</code></pre>
+
+<h2>Appy Transform Over Each Element in Array</h2>
+<ul>
+<li>Following is just a simple implementation of arra.map </li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {number[]} arr
+ * @param {Function} fn
+ * @return {number[]}
+ */
+var map = function(arr, fn) {
+  const result = [];
+  for (let i = 0; i &lt; arr.length; i++) {
+    result.push(fn(arr[i], i));
+  }
+  return result;
+};
+</code></pre>
+
+<h2>Filter Elements From Array</h2>
+<ul>
+<li>In this problem we just simply evaluate and check if the element should be pushed into the return array, if the answer is yes, we push if not <br />
+we continue.</li>
+<li>It's a simple question to show you how array.filter works.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {number[]} arr
+ * @param {Function} fn
+ * @return {number[]}
+ */
+var filter = function(arr, fn) {
+    const newArr = [];
+    for(let i = 0; i&lt;arr.length; i++) {
+        if(fn(arr[i],i)) {
+            newArr.push(arr[i]);
+        }
+    }
+    return newArr;
+
+};
+</code></pre>
+
+<ul>
+<li>What perhaps is more interesting is how this is a functional approach (not the code), but the idea of using filters. In Haskell for example you can <br />
+do </li>
+</ul>
+<pre class="codehilite"><code class="language-Haskell">xs = [1,2,3,4,5,6,7,8,9,...] --This ... is actual syntax 
+x_prime = [x &lt;- xs | x &gt; 5] -- This defination is simlar to how sets are defined in maths.
+</code></pre>
+
+<ul>
+<li>Here the condition is acting as "filter", generally you can have more elegant looking implementations when such filtering is required when using<br />
+funtional paradigm rather than loops and such in OOP.</li>
+</ul>
+<h2>Array Reduce Transformation</h2>
+<ul>
+<li>This problem just builds a little but on the concepts we have already seen, here is a simple solution.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {number[]} nums
+ * @param {Function} fn
+ * @param {number} init
+ * @return {number}
+ */
+var reduce = function(nums, fn, init) {
+    if(nums.length == 0)
+        return init;
+    let val = init;
+    for(let i =0; i&lt;nums.length; i++) {
+        val = fn(val,nums[i]);
+    }
+    return val;
+
+};
+</code></pre>
+
+<h2>Function Composition</h2>
+<ul>
+<li>Function compositin is nothing but the simple math fact that if you apply f(x) on g(x) on h(x) then the result is equal to F(x) = f(g(h(x)))</li>
+<li>This can be written in code as follows</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Function[]} functions
+ * @return {Function}
+ */
+var compose = function(funcs) {
+
+    return function(x) {
+        return funcs.reduceRight((acc, func) =&gt; func(acc), x);
+    };
+};
+
+/**
+ * const fn = compose([x =&gt; x + 1, x =&gt; 2 * x])
+ * fn(4) // 9
+ */
+</code></pre>
+
+<ul>
+<li>Following is the implementation of similar concept in C++</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;functional&gt;
+
+// Function to compose a list of functions
+std::function&lt;int(int)&gt; composeFunctions(const std::vector&lt;std::function&lt;int(int)&gt;&gt;&amp; funcs) {
+    return [funcs](int x) {
+        int result = x;
+        // Iterate through the functions in reverse order
+        for (auto it = funcs.rbegin(); it != funcs.rend(); ++it) {
+            result = (*it)(result);
+        }
+        return result;
+    };
+}
+
+int main() {
+    // Example functions
+    auto f1 = [](int x) { return x + 2; };
+    auto f2 = [](int x) { return x * 3; };
+    auto f3 = [](int x) { return x - 5; };
+
+    // Compose the functions
+    auto composedFn = composeFunctions({f1, f2, f3});
+
+    // Use the composed function
+    std::cout &lt;&lt; &quot;Result: &quot; &lt;&lt; composedFn(5) &lt;&lt; std::endl; // This would compute f1(f2(f3(5)))
+
+    return 0;
+}
+</code></pre>
+
+<h2>Return Length Of Argument</h2>
+<ul>
+<li>I mean, there isn't much to this one tbh.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {...(null|boolean|number|string|Array|Object)} args
+ * @return {number}
+ */
+var argumentsLength = function(...args) {
+    return args.length;  
+};
+
+/**
+ * argumentsLength(1, 2, 3); // 3
+ */
+</code></pre>
+
+<h2>Allow One Function Call</h2>
+<ul>
+<li>Here is the solution </li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Function} fn
+ * @return {Function}
+ */
+var once = function(fn) {
+    let called = false;
+    let result;
+
+    return function(...args) {
+        if (!called) {
+            result = fn.apply(this, args);
+            called = true;
+            return result;
+        }
+        return undefined;
+    }
+};
+
+/**
+ * let fn = (a,b,c) =&gt; (a + b + c)
+ * let onceFn = once(fn)
+ *
+ * onceFn(1,2,3); // 6
+ * onceFn(2,3,6); // returns undefined without calling fn
+ */
+</code></pre>
+
+<ul>
+<li>You can omit the last line, as when nothing is specified JS by default returns undefined.</li>
+</ul>
+<h2>Memoize</h2>
+<ul>
+<li>It's just the heading, just create an object to store the result of function calls, if the answer has been calculated already return that,<br />
+or if not calculate and store it for later calls.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">function memoize(fn) {
+    const cache = {};
+
+    return function(...args) {
+        const key = JSON.stringify(args);
+        if (key in cache) {
+            return cache[key];
+        } else {
+            const result = fn.apply(this, args);
+            cache[key] = result;
+            return result;
+        }
+    };
+}
+</code></pre>
+
+<h2>Add Two Promises</h2>
+<ul>
+<li>In this we just wait till both promises are complete and then just return </li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Promise} promise1
+ * @param {Promise} promise2
+ * @return {Promise}
+ */
+var addTwoPromises = async function(promise1, promise2) {
+    const  [val1,val2] = await Promise.all([promise1,promise2]);
+    return val1+val2;
+};
+
+/**
+ * addTwoPromises(Promise.resolve(2), Promise.resolve(2))
+ *   .then(console.log); // 4
+ */
+</code></pre>
+
+<h2>Sleep</h2>
+<ul>
+<li>I would like to tbh.</li>
+<li>But let's solve this problem first</li>
+<li>We just have to create a promise and wait for it, we pass the waiting time to setTimeout for that to happen after creating a new promise.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {number} millis
+ * @return {Promise}
+ */
+async function sleep(millis) {
+    await new Promise(resolve =&gt; setTimeout(resolve,millis));
+}
+
+/** 
+ * let t = Date.now()
+ * sleep(100).then(() =&gt; console.log(Date.now() - t)) // 100
+ */```
+
+
+## TimeOut Cancellation
+
+- I need to think a little about this one. update coming soon.
+- The solution is below
+
+```js
+const cancellable = function(fn, args, t) {
+    const cancelFn = function (){
+      clearTimeout(timer);
+  };
+  const timer = setTimeout(()=&gt;{
+      fn(...args)
+  }, t);
+  return cancelFn ;
+};
+</code></pre>
+
+<h2>Interval Cancellation</h2>
+<ul>
+<li>Same as above, but with different goal.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">var cancellable = function(fn, args, t) {
+    fn(...args);
+    const timer = setInterval(() =&gt; fn(...args), t);
+
+    const cancelFn = () =&gt; clearInterval(timer);
+    return cancelFn;
+};
+</code></pre>
+
+<h2>Promise Time Limit</h2>
+<ul>
+<li>We just implement what we have seen already with a different syntax and goal.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">var timeLimit = function(fn, t) {
+  return async function(...args) {
+    return new Promise((delayresolve, reject) =&gt; {
+      const timeoutId = setTimeout(() =&gt; {
+        clearTimeout(timeoutId);
+        reject(&quot;Time Limit Exceeded&quot;);
+      }, t);
+
+      fn(...args)
+        .then((result) =&gt; {
+          clearTimeout(timeoutId);
+          delayresolve(result);
+        })
+        .catch((error) =&gt; {
+          clearTimeout(timeoutId);
+          reject(error);
+        });
+    });
+  };
+};
+</code></pre>
+
+<h2>Cache with Time Limit</h2>
+<ul>
+<li>We just use the concepts learned and create and object to do our bidding.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">var TimeLimitedCache = function() {
+    this.memory= new Map();
+};
+
+/** 
+ * @param {number} key
+ * @param {number} value
+ * @param {number} duration time until expiration in ms
+ * @return {boolean} if un-expired key already existed
+ */
+TimeLimitedCache.prototype.set = function(key, value, duration) {
+    let isthere=false;
+    if(this.memory.has(key)){
+        isthere=true;
+        clearTimeout(this.memory.get(key)[1]);
+    }
+    const timeoutID=setTimeout(()=&gt;{
+        this.memory.delete(key);
+    },duration)
+    this.memory.set(key,[value,timeoutID]);
+    return isthere;
+};
+
+/** 
+ * @param {number} key
+ * @return {number} value associated with key
+ */
+TimeLimitedCache.prototype.get = function(key) {
+    if(this.memory.has(key)) return this.memory.get(key)[0];
+    return -1;
+};
+
+/** 
+ * @return {number} count of non-expired keys
+ */
+TimeLimitedCache.prototype.count = function() {
+    return this.memory.size;
+};
+
+/**
+ * const timeLimitedCache = new TimeLimitedCache()
+ * timeLimitedCache.set(1, 42, 1000); // false
+ * timeLimitedCache.get(1) // 42
+ * timeLimitedCache.count() // 1
+ */
+</code></pre>
+
+<h2>Debounce</h2>
+<ul>
+<li>Wait, didn't we already solve this too?</li>
+</ul>
+<pre class="codehilite"><code class="language-js">var debounce = function(fn, t = 1000) {
+    let timer;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() =&gt; fn(...args), t);
+    }
+};
+</code></pre>
+
+<ul>
+<li>This list could have been better you know.</li>
+</ul>
+<h2>Execute Asynchronous Functionsl Parallely</h2>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Array&lt;Function&gt;} functions
+ * @return {Promise&lt;any&gt;}
+ */
+var promiseAll = function(functions) {
+      return new Promise((resolve, reject) =&gt; {
+    const results = [];
+    let completed = 0;
+    const totalFunctions = functions.length;
+
+    if (totalFunctions === 0) {
+      resolve(results); // Immediately resolve if the array is empty
+      return;
+    }
+
+    functions.forEach((func, index) =&gt; {
+      // Execute each function which returns a promise
+      func()
+        .then(result =&gt; {
+          results[index] = result; // Store the result at the corresponding index
+          completed += 1; // Increment the count of completed promises
+          if (completed === totalFunctions) {
+            resolve(results); // Resolve the main promise when all functions have completed
+          }
+        })
+        .catch(error =&gt; {
+          reject(error); // Reject the main promise if any promise fails
+        });
+    });
+  });
+};
+
+/**
+ * const promise = promiseAll([() =&gt; new Promise(res =&gt; res(42))])
+ * promise.then(console.log); // [42]
+ */```
+
+
+
+## Is Object Empty
+
+```js
+/**
+ * @param {Object|Array} obj
+ * @return {boolean}
+ */
+var isEmpty = function(obj) {
+    return Object.keys(obj).length === 0;
+};
+</code></pre>
+
+<ul>
+<li>Yup, that was it!</li>
+</ul>
+<h2>Chunk Array</h2>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Array} arr
+ * @param {number} size
+ * @return {Array}
+ */
+var chunk = function(arr, size) {
+    const chunkedArr = [];
+  for (let i = 0; i &lt; arr.length; i += size) {
+    chunkedArr.push(arr.slice(i, i + size));
+  }
+  return chunkedArr;
+};
+</code></pre>
+
+<ul>
+<li>Yeah, not much to this one either.</li>
+</ul>
+<h2>Array prototype Last</h2>
+<ul>
+<li>In this we just update the base class and add a new functionality to it.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @return {null|boolean|number|string|Array|Object}
+ */
+Array.prototype.last = function() {
+    if (this.length === 0) {
+      return -1;
+    }
+    return this[this.length - 1];
+  };
+
+
+/**
+ * const arr = [1, 2, 3];
+ * arr.last(); // 3
+ */
+</code></pre>
+
+<h2>Group By</h2>
+<ul>
+<li>Same concept as above but now for groupBy functionality.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Function} fn
+ * @return {Object}
+ */
+Array.prototype.groupBy = function(fn) {
+        return this.reduce((acc, item) =&gt; {
+      const key = fn(item);
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    }, {}); 
+  };
+
+
+/**
+ * [1,2,3].groupBy(String) // {&quot;1&quot;:[1],&quot;2&quot;:[2],&quot;3&quot;:[3]}
+ */
+</code></pre>
+
+<h2>Sort By</h2>
+<ul>
+<li>I remeber when I saw a backend engineer write code like this, I didn't know you could do things like this.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Array} arr
+ * @param {Function} fn
+ * @return {Array}
+ */
+var sortBy = function(arr, fn) {
+    const clonedArr = [...arr];
+    clonedArr.sort((a,b) =&gt; fn(a) - fn(b));
+    return clonedArr;
+};
+</code></pre>
+
+<h2>Join Two Arrays By ID</h2>
+<ul>
+<li>Just join them  and sort them, and return!</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @return {Array}
+ */
+var join = function(arr1, arr2) {
+  const merged = [...arr1, ...arr2];
+
+  const mergedMap = new Map();
+
+  merged.forEach(obj =&gt; {
+    if (mergedMap.has(obj.id)) {
+      mergedMap.set(obj.id, { ...mergedMap.get(obj.id), ...obj });
+    } else {
+      mergedMap.set(obj.id, obj);
+    }
+  });
+
+  const joinedArray = Array.from(mergedMap.values());
+
+  joinedArray.sort((a, b) =&gt; a.id - b.id);
+
+  return joinedArray;
+};
+</code></pre>
+
+<h2>Flatten Depply Nested Array</h2>
+<ul>
+<li>Following is a recursive solution, it exceeds time limit for longer inputs.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {Array} arr
+ * @param {number} depth
+ * @return {Array}
+ */
+var flat = function (arr, n,cd=0) {
+    let result = [];
+
+  arr.forEach(item =&gt; {
+    if (Array.isArray(item) &amp;&amp; cd &lt; n) {
+      result = result.concat(flat(item, n, cd + 1));
+    } else {
+      result.push(item);
+    }
+
+  });    return result;
+
+};
+</code></pre>
+
+<ul>
+<li>However with memoization it works fine</li>
+</ul>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {any[]} arr
+ * @param {number} depth
+ * @return {any[]}
+ */
+var flat = function (arr, n) {
+    if(n==0) return arr;
+    let result = [];
+    const traverse = (a, n) =&gt; {
+        for(let i in a) {
+            if(n&gt;0 &amp;&amp; Array.isArray(a[i]))
+                traverse(a[i], n-1)
+            else
+                result.push(a[i])
+        }
+    }
+    traverse(arr, n);
+    return result;
+};
+</code></pre>
+
+<h2>Compact Object</h2>
+<pre class="codehilite"><code class="language-js">var compactObject = function(obj) {
+    if (typeof obj === 'object') {
+        if (Array.isArray(obj)) {
+            const tempArray = [];
+            for (let index = 0; index &lt; obj.length; index++) {
+                if (Boolean(obj[index])) {
+                    tempArray.push(compactObject(obj[index]));
+                }
+            }
+            return tempArray;
+        } else {
+            const tempObject = {};
+            for (const key in obj) {
+                if (Boolean(obj[key])) {
+                    tempObject[key] = compactObject(obj[key]);
+                }
+            }
+            return tempObject;
+        }
+    }
+    return obj;
+};
+</code></pre>
+
+<h2>Event Emitter</h2>
+<ul>
+<li>I sometimes forget that JS has classes too, cause I never think of it as an OOP langugage.</li>
+</ul>
+<pre class="codehilite"><code class="language-js">class EventEmitter {
+    constructor () {
+        this.subscriptions = new Map();
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {Function} callback
+     * @return {Object}
+     */
+    subscribe(eventName, callback) {
+        const id = Symbol(callback);
+        this.subscriptions.set(eventName, this.subscriptions.has(eventName)
+            ? [...this.subscriptions.get(eventName), { id, callback }]
+            : [{ id, callback }]
+        );
+
+        return {
+            unsubscribe: () =&gt;  this.subscriptions.set(eventName, this.subscriptions.get(eventName).filter(({ id: subId}) =&gt; subId !== id))
+        };
+    }
+
+    /**
+     * @param {string} eventName
+     * @param {Array} args
+     * @return {Array}
+     */
+    emit(eventName, args = []) {
+        return (this.subscriptions.get(eventName) || []).map(({ callback }) =&gt; callback(...args));
+    }
+}
+
+/**
+ * const emitter = new EventEmitter();
+ *
+ * // Subscribe to the onClick event with onClickCallback
+ * function onClickCallback() { return 99 }
+ * const sub = emitter.subscribe('onClick', onClickCallback);
+ *
+ * emitter.emit('onClick'); // [99]
+ * sub.unsubscribe(); // undefined
+ * emitter.emit('onClick'); // []
+ */
+</code></pre>
+
+<h2>Array Wrapper</h2>
+<pre class="codehilite"><code class="language-js">/**
+ * @param {number[]} nums
+ * @return {void}
+ */
+var ArrayWrapper = function(nums) {
+    this.array = nums;
+
+};
+
+/**
+ * @return {number}
+ */
+ArrayWrapper.prototype.valueOf = function() {
+    return this.array.reduce((p,c) =&gt; p+c,0)
+
+}
+
+/**
+ * @return {string}
+ */
+ArrayWrapper.prototype.toString = function() {
+    return JSON.stringify(this.array);
+}
+
+/**
+ * const obj1 = new ArrayWrapper([1,2]);
+ * const obj2 = new ArrayWrapper([3,4]);
+ * obj1 + obj2; // 10
+ * String(obj1); // &quot;[1,2]&quot;
+ * String(obj2); // &quot;[3,4]&quot;
+ */
+</code></pre>
+
+<h2>Calculator With Method Chaining</h2>
+<pre class="codehilite"><code class="language-js">class Calculator {
+
+    /** 
+     * @param {number} value
+     */
+    constructor(value) {
+        this.result = value
+    }
+
+    /** 
+     * @param {number} value
+     * @return {Calculator}
+     */
+    add(value){
+        this.result += value;
+        return this
+    }
+
+    /** 
+     * @param {number} value
+     * @return {Calculator}
+     */
+    subtract(value){
+        this.result -= value
+        return this
+    }
+
+    /** 
+     * @param {number} value
+     * @return {Calculator}
+     */  
+    multiply(value) {
+        this.result *= value
+        return this
+    }
+
+    /** 
+     * @param {number} value
+     * @return {Calculator}
+     */
+    divide(value) {
+        if(value === 0 ) throw new Error(&quot;Division by zero is not allowed&quot;) 
+        this.result  = this.result / value
+        return this
+  }
+
+    /** 
+     * @param {number} value
+     * @return {Calculator}
+     */
+    power(value) {
+        this.result = Math.pow(this.result,value)
+        return this
+    }
+
+    /** 
+     * @return {number}
+     */
+    getResult() {
+        return this.result
+    }
+}
+</code></pre>
+      </div>
+    </article>
+  </div>
+  
+  <script src="../../assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>

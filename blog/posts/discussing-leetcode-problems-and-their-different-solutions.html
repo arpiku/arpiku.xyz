@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussing Leetcode problems and their different solutions | arpiku</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="icon" href="../../assets/logo.png">
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="../index.html" class="back-link">← Back to Blog</a>
+    
+    <article>
+      <header class="post-header">
+        <div class="post-date">2024-02-24 19:42:00</div>
+        <h1 class="post-title">Discussing Leetcode problems and their different solutions</h1>
+        <div class="post-tags">
+          <span class="post-tag">C++</span> <span class="post-tag">Algorithms</span> <span class="post-tag">Leetcode</span>
+        </div>
+      </header>
+      
+      <div class="post-body">
+        <h2>Two Sum</h2>
+<ul>
+<li>The problem is rather simple when going with a naive solution, using a O($n^2$)  solution by lopping through all the unique<br />
+pairs possibe combinations (not considering the order) and returning the one that is meets our requirement.</li>
+<li>Time Complexity O($n^2$), Space Complexity - O($1$)</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
+        if(nums.empty()) 
+            return {};
+        for(int i = 0; i&lt;nums.size(); i++) 
+            for(int j = i+1; j&lt;nums.size(); j++)
+                if(nums[i]+nums[j]==target)
+                    return {i,j};
+        return {};
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>The solution is rather slow when n &gt;&gt; 1. How do we improve it?</li>
+<li>We consider the fact that if the solution exist in the array, then the two numbers get related by being complement of each <br />
+other, as only one unique solution leads to the correct sum.</li>
+<li>I.E if a + b = T, then a = T - b, and b = T - a.</li>
+<li>Now while iterating we can store the positions against these complements</li>
+<li>I.E fn(T-b) = pos(a), fn(T-a) = pos(b).</li>
+<li>We build a hash map to store the relevant information and we build it while iterating through the array itself.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    vector&lt;int&gt; twoSum(vector&lt;int&gt;&amp; nums, int target) {
+        if(nums.size() ==  0) 
+            return {};
+        std::unordered_map&lt;int,int&gt; m;
+        for(int i = 0; i&lt;nums.size(); i++) {
+            if(m.find(target - nums[i]) != m.end())
+                return {i, m[target-nums[i]]};
+            m[nums[i]] = i;
+        }
+
+        return {};
+    }
+};
+</code></pre>
+
+<ul>
+<li>
+<p>Notice how the time and space complexity has changed, we iterate through the array at most in n steps, however it may require us to construct a map that can increase in size as much as the array. Hence</p>
+</li>
+<li>
+<p>Time Complexity O($n$), Space Complexity - O($n$)</p>
+</li>
+</ul>
+<h2>Valid Parentheses</h2>
+<ul>
+<li>Let's first see an interesting solution to this problem that uses counting a single variable to find the solution.</li>
+<li>
+<p>It doesn't work for all the cases, but does provide an insight into the idea of using a single variable to keep more information just than the count of something, but may relate to the structure and values provide powerful solutions.</p>
+</li>
+<li>
+<p><strong>The Following Solution is Wrong!!</strong></p>
+</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isValid(string s) {
+        int balance = 0; // To keep track of parentheses balance
+
+    for (char c : s) {
+        if (c == '(') {
+            balance++;
+        } else if (c == ')') {
+            balance--;
+        } else if (c == '[') {
+            balance++;
+        } else if (c == ']') {
+            balance--;
+        } else if (c == '{') {
+            balance++;
+        } else if (c == '}') {
+            balance--;
+        }
+    }
+
+    return balance == 0;
+    }
+};
+</code></pre>
+
+<ul>
+<li>It will fail in case two different types of bracket close each other.</li>
+<li>Time Complexity - O($n$), Space Complexity - O($1$)</li>
+<li>Let's see a valid solution in python</li>
+</ul>
+<pre class="codehilite"><code class="language-python">class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        stack = []
+        memo = {'}':'{', ')':'(', ']':'['}
+        for ch in s:
+            if(len(stack) == 0 and ch in memo):
+                return False
+            if(len(stack) != 0 and ch in memo):
+                if(stack.pop() != memo[ch]):
+                    return False
+            else:
+                stack.append(ch)
+        return len(stack) == 0
+</code></pre>
+
+<ul>
+<li>Time Complexity - O($n$), Space Complexity O($n$)</li>
+<li>We introduce the concept of stack, but why?</li>
+<li>In this problem we are concerned with how things are ordered, and we know if a bracket is opened than it must be closed too in <br />
+order, which is what the stack helps us with, let's look at a cpp implementation of a solution.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">  class Solution {
+  public:
+      char topAndPop(std::stack&lt;char&gt;&amp; s) {
+          const char ch = s.top();
+          s.pop();
+          return ch;
+      }
+      bool isValid(string s) {
+          std::stack&lt;char&gt; ch_stack;
+          for(auto&amp; ch:s) {
+              if(hmap.find(ch) != hmap.end())
+                  ch_stack.push(hmap[ch]);
+              else if(ch_stack.empty() || ch != topAndPop(ch_stack))
+                  return false;
+          }
+          return ch_stack.empty();
+      }
+  };
+</code></pre>
+
+<ul>
+<li>Notice how in cpp stack.pop() does not return a value, so we wrap that functionality using another function.</li>
+<li>Time Complexity O($n$), Space Complexity O($n$)</li>
+</ul>
+<h2>Merge Two Lists</h2>
+<ul>
+<li>This problem requires merge two lists, think of a function that takes the top front nodes and compares them and then properly links them in order and them moves to next comparison step.</li>
+<li>The iterative solution will be:</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode dummy(0);
+        ListNode* curr = &amp;dummy;
+        while(l1 &amp;&amp; l2) {
+            if(l1-&gt;val &gt; l2-&gt;val)  {
+                curr-&gt;next = l2;
+                l2 = l2-&gt;next;
+            } else {
+                curr-&gt;next = l1;
+                l1 = l1-&gt;next;
+            }
+            curr = curr-&gt;next;
+        }
+
+        if(l1 != NULL) {
+            curr-&gt;next = l1;
+        } else {
+            curr-&gt;next = l2;
+        }
+
+        return dummy.next;
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>Time Complexity O($n$), Space Complexity O($1$)</li>
+<li>Thing to notice are the two variables we created, the problem that they solve is interesting.</li>
+<li>When iterating through a linked list, if you have an iterator node, that gets modified continuously, <br />
+we cannot return that, so we need to store the value of original head somewhere.</li>
+<li>But since the head of the returned list maybe from either of the LLs we cannot not know before hand <br />
+which to choose.</li>
+<li>So we create a dummy variable that exists before either of the linked list and then return the next <br />
+node of dummy which will be the sorted head of our answer.</li>
+<li>We use another variable curr to iterate and correctly join our lists.</li>
+<li>Things to notice:<ul>
+<li>See we only use a single if statement and do not do and explicit comparison on the else statement as <br />
+  '&gt;' not being true implies '&lt;=' being true for the variable, one can miss this and write code like this.</li>
+</ul>
+</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if(!list1)
+            return list2;
+        if(!list2)
+            return list1;
+        ListNode dummy(0);
+        ListNode* curr = &amp;dummy;
+
+        while(list1&amp;&amp;list2) {
+            if(list1-&gt;val &gt; list2-&gt;val) {
+                curr-&gt;next = list2;
+                list2 = list2-&gt;next;
+            }
+            if(list2-&gt;val &gt; list1-&gt;val)  {
+                curr-&gt;next = list1;
+                list1 = list1-&gt;next;
+            } curr = curr-&gt;next;
+        }
+        if(list1)
+            curr-&gt;next = list1;
+        if(list2)
+            curr-&gt;next = list2;
+        return dummy-&gt;next;
+    }
+};
+</code></pre>
+
+<ul>
+<li>
+<p>This code fails because both statements can fail and result in an access attempt on null pointer ('curr-&gt;next')</p>
+</li>
+<li>
+<p><strong>Is there a way to remove the dummy variable?</strong></p>
+</li>
+<li>What about recursion, each recursive step is function waiting for the function within to pass it the results, the very structure of recursion can be used to replace the need of a dummy variable.</li>
+<li>Let's see!</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if(!list1)
+            return list2;
+        if(!list2)
+            return list1;
+        if(list1-&gt;val &gt; list2-&gt;val) {
+            list2-&gt;next = mergeTwoLists(list1,list2-&gt;next);
+            return list2;
+        }
+        else  {
+            list1-&gt;next = mergeTwoLists(list1-&gt;next,list2);
+            return list1;
+        }
+    }
+};
+</code></pre>
+
+<ul>
+<li>Time Complexity O($m+n$) Space Complexity O($m+n$)</li>
+</ul>
+<h2>Best Time to Buy and Sell Stocks</h2>
+<ul>
+<li>Well only if I could figure that out!</li>
+<li>Let's analyse the problem:<ul>
+<li>The order matters in this problem, we can use two variables one of which is always lower than the other one, making sure we can't sell even before buying.</li>
+<li>We store the maxProfit in a variable, and update it if the profit for a particular pair of days is greater.</li>
+<li>In case the profit for a pair of days is -ve, that implies there is price lower than current price using which more profit can be made potentially.</li>
+</ul>
+</li>
+<li>The following approach uses two variables to find the max profit</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int maxProfit(vector&lt;int&gt;&amp; prices) {
+        if(prices.empty())
+            return 0;
+        int maxProfit = 0;
+        int currProfit = 0;
+        int buyDay = 0;
+        int sellDay = 1;
+        while(sellDay &lt; prices.size()) {
+            currProfit = prices[sellDay] - prices[buyDay];
+            if(currProfit &gt; maxProfit) 
+                maxProfit = currProfit;
+            if(currProfit &lt; 0) 
+                buyDay = sellDay;
+            sellDay++;
+        }
+        return maxProfit;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Time ComplexityO($n$), Space Complexity O($1$)</li>
+<li>One can also solve this problem by finding the minimum price, and calculating the relative profit w.r.t minimum price and return the maximum, but we do not need to make sure that the order is maintained.</li>
+<li>The order thing can be taken care easily by the very nature of iteration itself.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int maxProfit(vector&lt;int&gt;&amp; prices) {
+        if(prices.empty())
+            return true;
+        int minPrice = prices[0];
+        int maxProfit = 0;
+        for(auto&amp; price: prices) {
+            minPrice = std::min(minPrice,price);
+            int currProfit = price - minPrice;
+            maxProfit = std::max(maxProfit, currProfit);
+        }
+        return maxProfit;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Timpe Complexity O($n$), Space Complexity O($1$)</li>
+</ul>
+<h2>Invert a Binary Tree</h2>
+<ul>
+<li>Binary Trees in general lend themselves well to recursion, imagine<ul>
+<li>Being a node, if its null return</li>
+<li>swap the children otherwise</li>
+<li>call the function on it's children then just simply return the root that was given</li>
+</ul>
+</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(!root)
+            return root;
+        std::swap(root-&gt;left, root-&gt;right);
+        invertTree(root-&gt;left);
+        invertTree(root-&gt;right);
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>
+<p>Timpe Complexity O($n$), <strong>Space Complexity O($h$)-&gt;O($log(n)$) if tree is balanced</strong></p>
+</li>
+<li>
+<p>Notice the order, we go to left revert everything then we go to the right and revert everything.</p>
+</li>
+<li>Since the reversal of both sides is independent these steps can be parallelised?</li>
+<li>This solution was an implementation of depth first search algorithm</li>
+<li>We can also solve it using breadth first search </li>
+<li>Let's see that solution:</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(!root) 
+            return root;
+        std::queue&lt;TreeNode*&gt; q;
+        q.push(root);
+        while(!q.empty()) {
+            TreeNode* currNode = q.front();
+            q.pop();
+            if(currNode-&gt;left)
+                q.push(currNode-&gt;left);
+            if(currNode-&gt;right)
+                q.push(currNode-&gt;right);
+            std::swap(currNode-&gt;left, currNode-&gt;right);
+        }
+        return root; 
+    }
+};
+</code></pre>
+
+<ul>
+<li>Time Complexity-O($n$), SpaceComplexity O(w) -&gt; (O(logn),O(n))</li>
+<li>Interesting thing to notice is the <strong>swap statement</strong>, one can put it just below the pop() statement too.</li>
+</ul>
+<h2>Valid Anagram</h2>
+<ul>
+<li>We have two string is they are anagrams ,then their sorted version will be have to be equal (always?)</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        std::sort(s.begin(),s.end());
+        std::sort(t.begin(),t.end());
+        return s == t;
+    }
+};
+</code></pre>
+
+<ul>
+<li>TO($nlong$),Space Complexity-O($1$)</li>
+<li>The above solution is rather straight forward and easy, but what if we are not allowed to reverse the lists?</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        unordered_map&lt;char,int&gt; ms;
+        unordered_map&lt;char,int&gt; mt;
+        for(auto&amp; ch:s) {
+            ms[ch]++;
+        }
+        for(auto&amp; ch:t) {
+            mt[ch]++;
+        }
+        for(auto&amp; z:ms) {
+            if(z.second != mt[z.first])
+                return false;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Time Complexity O($n$), SO($n$)</li>
+<li>Here's another cooler looking piece of code! , which I wrote a little later on </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        auto stringHasher = [](string s) {
+            std::unordered_map&lt;char,int&gt; m;
+            for(auto&amp; ch:s) {
+                m[ch]++;
+            }
+            return m;
+        };
+        return stringHasher(s) == stringHasher(t);
+    }
+};
+</code></pre>
+
+<h2>Binary Search</h2>
+<ul>
+<li>This solution requires a simple implementation of binary search.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int search(vector&lt;int&gt;&amp; nums, int target) {
+        int l = 0;
+        int r = nums.size() -1;
+        int mid = 0;
+        while(r&gt;=l) {
+            mid = l + (r-l)/2;
+            if(nums[mid] &lt; target) {
+                l = mid + 1;
+            }
+            else if (nums[mid] &gt; target) {
+                r = mid - 1;
+            }
+            else {
+                return mid;
+            }
+        }
+        return  -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>TO(logn), SO(1)</li>
+<li>One important thing to notice is the positioning of 'if else statement', i.e the following code</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int search(vector&lt;int&gt;&amp; nums, int target) {
+        int l = 0;
+        int r = nums.size() -1;
+        int mid = 0;
+        while(r&gt;=l) {
+            mid = l + (r-l)/2;
+            if(nums[mid] &lt; target) {
+                l = mid + 1;
+            }
+            if (nums[mid] &gt; target) {
+                r = mid - 1;
+            }
+            else {
+                return mid;
+            }
+        }
+        return  -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Will not work, as the target may not exist in the array, the code looks rather similar in the above two cases, I have <br />
+that mistake, following agains is a bit cooler looking code.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int _search(vector&lt;int&gt;&amp; nums, int target, size_t hi, size_t lo) { 
+        std::cout &lt;&lt; hi &lt;&lt; lo &lt;&lt; std::endl;
+        if(hi &gt;= nums.size() || lo &lt; 0 || lo &gt; hi) return -1; // Check for out of bounds
+        int mid = lo + (hi - lo)/2; //Look at the middle
+        if(target == nums[mid]) return mid; // Found it!Here
+        if(target &gt; nums[mid]) return _search(nums,target,hi,mid+1);//Nah! //You Look Higher
+        return _search(nums,target,mid-1,lo); //You Look Lower!
+    }
+    int search(vector&lt;int&gt;&amp; nums, int target) {
+        size_t hi = nums.size()-1;
+        size_t lo = 0;
+        return _search(nums,target,hi,lo);
+    }
+};
+</code></pre>
+
+<h2>Flood Fill</h2>
+<ul>
+<li>We can do a dfs, i.e we will go the first element, check whether it does or does not have the correct color, if it does then we simply return.</li>
+<li>If not we change it and call the function on all the neighbours that are valid.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    void _floodFill(vector&lt;vector&lt;int&gt;&gt;&amp; image, int sr, int sc, int color, int org) {
+        if(sr &gt;=image.size() || sr &lt; 0 || sc &lt; 0 || sc &gt;=image[0].size())
+            return;
+
+        if(image[sr][sc] == org) {
+            image[sr][sc] = color;
+        _floodFill(image,sr+1,sc,color,org);
+        _floodFill(image,sr-1,sc,color,org);
+        _floodFill(image,sr,sc+1,color,org);
+        _floodFill(image,sr,sc-1,color,org);
+        }
+    }
+vector&lt;vector&lt;int&gt;&gt; floodFill(vector&lt;vector&lt;int&gt;&gt;&amp; image, int sr, int sc, int color)  { 
+        if(image.empty())   
+            return {};
+        if(image[sr][sc] == color)
+            return image;
+        int org = image[sr][sc];
+        _floodFill(image,sr,sc,color, org);
+        return image;
+    }
+};
+</code></pre>
+
+<ul>
+<li>The above code uses depth first search, imagine all the image points as a node connected four way with other ndoes.</li>
+<li>We can also use breathd first search to do the same.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; floodFill(vector&lt;vector&lt;int&gt;&gt;&amp; image, int sr, int sc, int color) {
+        if(image.empty())
+            return {};
+        if(image[sr][sc] == color)
+            return image;
+
+        std::queue&lt;std::pair&lt;int,int&gt;&gt; q;
+        const int dr[] = {-1,1,0,0};
+        const int dc[] = {0,0,-1,1};
+        const int R = image.size()-1;
+        const int C = image[0].size()-1;
+        const int org = image[sr][sc];
+
+        q.push(std::make_pair(sr,sc));
+
+
+        while(!q.empty()) {
+            int r,c;
+            std::tie(r,c) = q.front();
+            q.pop();
+            image[r][c] = color;
+            for(int i = 0; i&lt;4; i++) {
+                int nr = r + dr[i];
+                int nc = c + dc[i];
+                if(nc &lt;= C &amp;&amp; nc &gt;= 0 &amp;&amp; nr &gt;= 0 &amp;&amp; nr &lt;=R &amp;&amp; image[nr][nc] == org)
+                    q.push(std::make_pair(nr,nc));
+
+            }
+        }
+
+        return image;
+
+    }
+};
+</code></pre>
+
+<h2>Lowest Common Ancestor</h2>
+<ul>
+<li>Again we have a binary search tree, it's very structure gives us a rather elegant solution.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root)
+            return root;
+        if(p-&gt;val &gt; root-&gt;val &amp;&amp; q-&gt;val &gt; root-&gt;val)
+            return lowestCommonAncestor(root-&gt;right, p,q);
+        if(p-&gt;val &lt; root-&gt;val &amp;&amp; q-&gt;val &lt; root-&gt;val) 
+            return lowestCommonAncestor(root-&gt;left,p,q);
+        return root;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Look how the very structure dictates the direction of movement for search, just like the binary search we had seen before.</li>
+<li>Above is a <strong>dfs</strong>  approach, let's see how a <strong>bfs</strong> approach will look like.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+class Solution {
+public:
+   TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (!root) {
+        return root;
+    }
+
+    // Create a queue for BFS
+    std::queue&lt;TreeNode*&gt; bfsQueue;
+    bfsQueue.push(root);
+
+    while (!bfsQueue.empty()) {
+        TreeNode* current = bfsQueue.front();
+        bfsQueue.pop();
+        std::cout &lt;&lt; current-&gt;val &lt;&lt; std::endl;
+
+        if ((current-&gt;val &gt;= p-&gt;val &amp;&amp; current-&gt;val &lt;= q-&gt;val) || (current-&gt;val &lt;= p-&gt;val &amp;&amp; current-&gt;val &gt;= q-&gt;val)) {
+            return current; // Found the LCA
+        }
+
+            if(current-&gt;right)
+                bfsQueue.push(current-&gt;right);
+
+            if (current-&gt;left) {
+                bfsQueue.push(current-&gt;left);
+        }
+    }
+
+    return NULL; // LCA not found
+}
+};
+</code></pre>
+
+<ul>
+<li>
+<p>The <strong>IMPORTANT</strong> thing is the equality check, see it's not just '&lt;&gt;' but '&lt;&gt;='. </p>
+</li>
+<li>
+<p>Follwing is another solution, the two lines above make the code run faster! Do not use them for actual code though.</p>
+</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">// Little trick to give your code steroids
+ #pragma GCC optimize(&quot;Ofast&quot;)
+static auto _ = [] () {ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);return 0;}();
+
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root)
+            return root;
+        if(root-&gt;val &gt; p-&gt;val &amp;&amp; root-&gt;val &gt; q-&gt;val)
+            return lowestCommonAncestor(root-&gt;left,p,q);
+        if(root-&gt;val &lt; p-&gt;val &amp;&amp; root-&gt;val &lt; q-&gt;val)
+            return lowestCommonAncestor(root-&gt;right,p,q);
+        return root;
+    }
+};
+</code></pre>
+
+<h2>Balanced Binary Tree</h2>
+<ul>
+<li>For this problem the important insight is solving the problem of figuring out the height of the left and right subTrees.</li>
+<li>We can write another function that specifically gets the height of a subtree</li>
+<li>We see if the difference of two subtree height is greater than 1, if it is then , we simple return true.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int getHeight(TreeNode* node) {
+        if(!node)
+            return 0;
+        return std::max(1 + getHeight(node-&gt;right), 1 + getHeight(node-&gt;left));
+    }
+
+
+    bool isBalanced(TreeNode* root) {
+        if(!root)
+            return true;
+        if(abs(getHeight(root-&gt;left) - getHeight(root-&gt;right) &gt; 1))
+            return false;
+        return isBalanced(root-&gt;right) &amp;&amp; isBalanced(root-&gt;left);
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>TO, SO</li>
+<li>The thing to notice is how we use &amp;&amp; operator in our recursive function call.</li>
+</ul>
+<h2>Linked List Cycle.</h2>
+<ul>
+<li>This problem uses property of numbers in order to find the cycle.</li>
+<li>Think of hands of clocks they move at different speeds but come at the same point through out the day.</li>
+<li>That point is the LCM of the hands.</li>
+<li>We can use the same idea to find if there is a cycle, imagine two iterators going through the linked list, with one moving at a higher speed, if there is a cycle then they will eventually reach the same node.</li>
+<li>If the cycle is not there, well then our loop will simply exit and result in false being returned.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* s = head;
+        ListNode* f = head;
+        while(f &amp;&amp; f-&gt;next) {
+            s = s-&gt;next;f = f-&gt;next-&gt;next;
+            if (s == f)
+                return true;
+        } return false;
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>Something interesting to notice is about C++ code is that following line doesn't work.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">        ListNode* s,f;
+        s = head;
+        f = head;
+</code></pre>
+
+<ul>
+<li>The correct way of doing it is:</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">        ListNode *s,*f;
+        s = head;
+        f = head;
+</code></pre>
+
+<ul>
+<li>More you know! This is becomes type* a,b means type *a, b not *a *b.</li>
+<li>One more thing to keep to keep the idea in the head, is to think of the smalled linked list possible, it will have atleast<br />
+two nodes, otherwise you can make a mistake in checking for the right condition in the while loop.</li>
+</ul>
+<h2>Implement Queue using stacks.</h2>
+<ul>
+<li>This question is rather trivial and not fun : (.</li>
+<li>But here is the code</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class MyQueue {
+private:
+    std::stack&lt;int&gt; stack1;
+    std::stack&lt;int&gt; stack2;
+public:
+
+
+    MyQueue() {
+    }
+
+    void push(int x) {
+        stack1.push(x);
+    }
+
+    int pop() {
+        int val = 0;
+        if(stack2.empty())
+            while(!stack1.empty()) {
+                stack2.push(stack1.top());
+                    stack1.pop();
+            }
+
+        val = stack2.top();
+        stack2.pop();
+        return val;
+
+    }
+
+    int peek() {
+                if(stack2.empty())
+            while(!stack1.empty()) {
+                stack2.push(stack1.top());
+                    stack1.pop();
+            }
+        return stack2.top();
+    }
+
+    bool empty() {
+        return stack1.empty()&amp;&amp;stack2.empty();
+    }
+};
+</code></pre>
+
+<ul>
+<li>Imagine a deck of cards as the stack, implementing queue is similar to rotating the stack, i.e getting it upside down.</li>
+<li>This is done using the second stack, take everything in s1 and put in s2<ul>
+<li>s1 -&gt; s2</li>
+</ul>
+</li>
+<li>Now the top of the s2 will be the bottom piece in s1, hence we successfully implement FIFO, using FILO. Amazing!</li>
+</ul>
+<h2>First Bad Version</h2>
+<ul>
+<li>The problem here is not that of writing the algorithm simply, because following is valid solution.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int firstBadVersion(int n) {
+        int i = 1;
+        while(i&lt;=n) 
+            if(isBadVersion(i++))
+                return i-1;
+        return -1;
+    }
+};
+</code></pre>
+
+<ul>
+<li>The solution they want from us is the following, which is another implementation of <strong>binary search</strong> on the very number rather than an array.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int firstBadVersion(int n) {
+        int l=1;
+        int h=n;
+        while(l&lt;h){
+            const int mid=l+(h-l)/2;
+            if(isBadVersion(mid)){
+                h=mid;
+            }
+            else{
+                l=mid+1;
+            }
+        }
+        return l;
+    }
+};
+</code></pre>
+
+<h2>Ransom Note</h2>
+<ul>
+<li>[[hashMap]] [[string]] [[counting]]</li>
+<li>This is an important algorithm for kidnappers, and have been widely used by Big Crime, so prepare it well before interviewing for the Mafia, Cartel etc.</li>
+<li>The idea is rather simple, count all the characters available in magazine and store the relevant counts against the characters in a hash table.</li>
+<li>Then iterate through the ransomNote string, if there is a character missing in magazine hash map or that character count has reached zero we return fasle.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        if(magazine.size() == 0)
+            return false;
+        unordered_map&lt;char,int&gt;  m;
+        for(auto&amp; ch:magazine) {
+            m[ch]++;
+        }
+
+        for(auto&amp; ch:ransomNote) {
+            if(m.find(ch) == m.end() || m[ch] == 0)
+                return false;
+            m[ch]--;
+        }
+        return true;
+    }
+};
+</code></pre>
+
+<ul>
+<li>One can solve this problem other ways too, we can delete the charater from magazine as we iterator through the ransom Note, <br />
+and in the end if there are still characters left in the ransom note, then we know that magazine didn't have enough letters.</li>
+<li>That algorithm will be slower as well will have to search for each character in the next string.</li>
+<li>Other would be making a Trie structure and seeing if one is a possible subtree of the other.</li>
+</ul>
+<h2>Climbing Stairs</h2>
+<ul>
+<li>This problem is just like implementing a recursive memoized function for Fibonacci series.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int cs(unordered_map&lt;int,int&gt;&amp; m, int n) {
+        if(m.find(n) == m.end())
+            m[n] = cs(m,n-1)+cs(m,n-2);
+        return m[n];
+    }
+
+    int climbStairs(int n) {
+        if(!n)
+            return 0;
+        unordered_map&lt;int,int&gt; hmap = {{1,1}, {2,2}};
+        return cs(hmap,n);
+    }
+};```
+
+- Simple stuff!
+
+## Longest Palindrome
+- This problem introduces interesting idea to solve it, imagine you are given a string, consider all the elements with even 
+count and start filling the string at both ends, if their count is even then it means that the final string will infact be a 
+palindrome.
+- The characters that have a odd count say 2n+1 then the 2n times we can just follow the even approach and put the remaining one in the the centre.
+- If there are characters with only one count then any of them can be used to form the centre of the string but only one.
+
+```cpp
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        unordered_map&lt;char,int&gt; map;
+        int odd = 0;
+        for(auto&amp; ch:s) {
+            map[ch]++;
+            if(map[ch]%2 == 1) 
+                odd++;
+            else
+                odd--;
+        }
+        if(odd&gt;1)
+            return s.size()-odd+1;
+        return s.size();
+
+    }
+};
+</code></pre>
+
+<h2>Reverse Linked List</h2>
+<ul>
+<li>Just like all the other recursion problem, we can use it here as well</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(!head || !head-&gt;next) 
+            return head;
+        ListNode* newHead = reverseList(head-&gt;next);
+        head-&gt;next-&gt;next = head;
+        head-&gt;next = NULL;
+        return newHead;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Imagine getting to each head, then wondering if there is anymore left, if there is you go there.</li>
+<li>Finally when you are at the end and only have one node in front of you, reverese the two nodes, by placing your current head after the next node and then severing<br />
+the connection to next node.</li>
+<li>Finally you return the new head.</li>
+</ul>
+<h2>Majority Element</h2>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int majorityElement(const vector&lt;int&gt;&amp; nums) {
+        int element = 0;
+        int count = 0;
+        for(auto&amp; i:nums) {
+            if(count &lt; 0)
+                element = i;
+            else if (element == i)
+                count++;
+            else
+                count --;
+        }
+        return element;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Another perhaps more straight forward approach would be </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int majorityElement(vector&lt;int&gt;&amp; nums) {
+        std::sort(nums.begin(),nums.end());
+        return nums[nums.size()/2];
+    }
+};
+</code></pre>
+
+<ul>
+<li>Also you cannot pass  const iterators (.cbegin(), .cend()) into std::sort.</li>
+<li>Another way of dealing with this problem is by using a hashMap as following.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int majorityElement(vector&lt;int&gt;&amp; nums) {
+        unordered_map&lt;int,int&gt; m;
+        for(auto i:nums) {
+            m[i]++;
+        }
+        for(auto z:m) {
+            if (z.second &gt; nums.size()/2)
+                return z.first;
+        }
+        return -1;
+    }
+};
+</code></pre>
+
+<h2>Add Binary</h2>
+<ul>
+<li>An interesting problem</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    string addBinary(string a, string b) {
+        int i = a.size()-1;
+        int j = b.size()-1;
+        int carry = 0;
+        std::string ans = &quot;&quot;;
+        while(i&gt;=0 || j&gt;=0 || carry &gt;0) {
+            int sum = carry;
+            if(i&gt;=0) 
+                sum += a[i--] - '0';
+            if(j&gt;=0)
+                sum += b[j--] - '0';
+            ans = std::to_string(sum%2) + ans;
+            carry = sum/2;
+        }
+        return ans;
+    }
+};
+</code></pre>
+
+<ul>
+<li>In this solution we are "subtracting" "0", that doesn't make sense but in ASCII all characters are basically represented using<br />
+numbers.</li>
+<li>The char "1" and "0" are numerically 1 integer away from each other. So yeah technically you can do something like <br />
+int("b" - "a")</li>
+<li>Try out in python as (ord('b') - ord('a')), see what you get.</li>
+</ul>
+<h2>Diameter of a binary tree.</h2>
+<ul>
+<li>We can use simple dfs to solve this problem</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int getHeight(TreeNode* root, int&amp; dia) {
+        if(!root)
+            return 0;
+        int lheight = getHeight(root-&gt;left,dia);
+        int rheight = getHeight(root-&gt;right,dia);
+        dia = std::max(dia, lheight+rheight);
+        return 1 + std::max(getHeight(root-&gt;left,dia), getHeight(root-&gt;right,dia));
+
+    }
+
+    int diameterOfBinaryTree(TreeNode* root) {
+        if(!root)
+            return 0;
+        int dia = 0;
+        getHeight(root,dia);
+        return dia;
+
+    }
+};
+</code></pre>
+
+<h2>Middle of the linked list</h2>
+<ul>
+<li>This question builds upon the solutions discussed, as you can see we are traversing the LL using two pointers.</li>
+<li>As we hit the end, as the faster node is traveling at twice the speed of the slower one, the slower one must be <br />
+at the middle.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        if(!head)
+            return head;
+        ListNode* slow = head;
+        while(head &amp;&amp; head-&gt;next) {
+            slow = slow-&gt;next;
+            head = head-&gt;next-&gt;next;
+        }
+        return slow;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Don't try to memorize the solutin, but think of trivial case and how the algorithm would perform, if there were only three <br />
+nodes, in the first iteration itself the fast node would be at the end.</li>
+<li>While the slow node would be at the middle, hence we would just return it.</li>
+<li>For this Time Complexity O($n/2$), and Space Complexity O(1)</li>
+</ul>
+<h2>Contains Duplicate</h2>
+<ul>
+<li>Again this problem leads to multiple solution, one being the following which uses a hash map.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+        unordered_map&lt;int,int&gt; m;
+        for(auto&amp; i:nums) {
+            m[i]++;
+            if(m[i] &gt; 1)
+                return true;
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<ul>
+<li>The following uses sorting</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+        std::sort(nums.begin(),nums.end());
+        auto itr = nums.begin();
+        while(itr+1 != nums.end()) {
+            if(*itr == *(++itr))
+                return true; 
+
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<p>Also all the following are equivalent</p>
+<pre class="codehilite"><code class="language-cpp">*++itr = * ++itr = *(++itr)
+</code></pre>
+
+<ul>
+<li>But the following won't work</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+        std::sort(nums.begin(),nums.end());
+        auto itr = nums.begin();
+        while(itr+1 != nums.end()) {
+            if(*itr == *(itr++))
+                return true; 
+
+        }
+        return false;
+    }
+};
+</code></pre>
+
+<h2>Maximum Depth of a binary tree.</h2>
+<ul>
+<li>Again seeing that we have a binary tree, the problem leads itself well to a very simple recursive approach.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int getHeight(TreeNode* root) {
+        if(!root)
+            return 0;
+        return 1 + std::max(getHeight(root-&gt;left), getHeight(root-&gt;right));
+    }
+
+    int maxDepth(TreeNode* root) {
+        if(!root)
+            return 0;
+        return getHeight(root);
+    }
+};
+</code></pre>
+
+<ul>
+<li>Let us also see how a bfs approach would have worked.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root)
+            return 0;
+        std::queue&lt;TreeNode*&gt; q;
+        uint height = 0; 
+        q.push(root);
+        while(!q.empty()) {
+            int lvlwidht = q.size();
+            for(int i =0; i&lt;lvlwidht; i++) {
+                TreeNode* tn = q.front();
+                q.pop();
+                if(tn-&gt;left) 
+                    q.push(tn-&gt;left);
+                if(tn-&gt;right)
+                    q.push(tn-&gt;right);
+            }
+
+            height++;
+        }
+        return height;
+    }
+};
+</code></pre>
+
+<ul>
+<li>The interesting thing to notice about this implementation is how we have seperated the task of equeing from the main loop by in<br />
+troducing another loop.</li>
+<li>One more thing, since now in this way we are also aware of the width of the tree, we can also find the max width of the tree.</li>
+</ul>
+<h2>Roman to Integer</h2>
+<ul>
+<li>The problem introduces an insight into how the data is behaving and we use that to our advantage.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int romanToInt(string s) {
+        int res = 0;
+        stack&lt;char&gt; stack;
+        unordered_map&lt;char,int&gt; rti = {{'I',1},{'V',5},{'X',10},{'L',50},{'C',100},{'D',500},{'M',1000}};
+
+        for(auto&amp; ch:s) {
+            if(!stack.empty() &amp;&amp;rti[stack.top()] &lt; rti[ch] ) {
+                res += (rti[ch] - rti[stack.top()]);
+                stack.pop();
+                continue;
+            }
+            stack.push(ch);
+        } 
+
+        while(!stack.empty()) {
+            res += rti[stack.top()];
+            stack.pop();
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>I mean if you want something faster, follwing is something to look at, although not in a pleasant way tbh...</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int romanToInt(string s) {
+        // I can be placed before V (5) and X (10) to make 4 and 9. 
+        // X can be placed before L (50) and C (100) to make 40 and 90. 
+        // C can be placed before D (500) and M (1000) to make 400 and 900.
+        int sum = 0;
+        for (int i = 0; i &lt; s.length(); i++){
+            switch(s[i]){
+                case 'I':
+                    if (s[i+1] == 'V'){
+                        sum += 4;
+                        i++;
+                    }
+                    else if (s[i+1] == 'X'){
+                        sum += 9;
+                        i++;
+                    }
+                    else{
+                        sum += 1;
+                    }
+                break;
+                case 'V':
+                    sum += 5;
+                    break;
+                case 'X':
+                    if (s[i+1] == 'L'){
+                        sum += 40;
+                        i++;
+                    }
+                    else if (s[i+1] == 'C'){
+                        sum += 90;
+                        i++;
+                    }
+                    else{
+                        sum += 10;
+                    }
+                    break;
+                case 'L':
+                    sum += 50;
+                    break;
+                case 'C':
+                    if (s[i+1] == 'D'){
+                        sum += 400;
+                        i++;
+                    }
+                    else if (s[i+1] == 'M'){
+                        sum += 900;
+                        i++;
+                    }
+                    else{
+                        sum += 100;
+                    }
+                    break;
+                case 'D':
+                    sum += 500;
+                    break;
+                case 'M':
+                    sum += 1000;
+                    break;
+
+            }
+        }
+        return sum;
+    }
+};
+</code></pre>
+
+<h2>BackSpace String Compare</h2>
+<ul>
+<li>We can solve this in a more natural way if use the stack.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool backspaceCompare(const string&amp; s, const string&amp; t) {
+        std::stack&lt;char&gt; s_stack;
+        std::stack&lt;char&gt; t_stack;
+        for(auto&amp; ch:s) {
+            if(ch == '#' &amp;&amp; !s_stack.empty())
+                s_stack.pop();
+            else if (ch != '#') 
+                s_stack.push(ch);
+        }
+
+        for(auto&amp; ch:t) {
+            if(ch == '#' &amp;&amp; !t_stack.empty())
+                t_stack.pop();
+            else if (ch != '#') 
+                t_stack.push(ch);
+        }
+
+        return s_stack == t_stack;
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>Notice how the stacks mimics what we acutally do when typing.</li>
+<li>The other approach would be to use two variables as follows.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool backspaceCompare(std::string S, std::string T) {
+    int i = S.length() - 1;
+    int j = T.length() - 1;
+    int skipS = 0, skipT = 0;
+
+    while (i &gt;= 0 || j &gt;= 0) {
+        while (i &gt;= 0) {
+            if (S[i] == '#') {
+                skipS++;
+                i--;
+            } else if (skipS &gt; 0) {
+                skipS--;
+                i--;
+            } else {
+                break;
+            }
+        }
+
+        while (j &gt;= 0) {
+            if (T[j] == '#') {
+                skipT++;
+                j--;
+            } else if (skipT &gt; 0) {
+                skipT--;
+                j--;
+            } else {
+                break;
+            }
+        }
+
+        // Compare the current characters if both are non-backspace characters
+        if (i &gt;= 0 &amp;&amp; j &gt;= 0 &amp;&amp; S[i] != T[j]) {
+            return false;
+        }
+
+        // If one string reaches the end but the other doesn't, they are not equal
+        if ((i &gt;= 0) != (j &gt;= 0)) {
+            return false;
+        }
+
+        i--;
+        j--;
+    }
+
+    return true;
+}
+};
+</code></pre>
+
+<h2>Counting bits</h2>
+<ul>
+<li>[[Bit-Manipulation]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    uint8_t hammingWeight(uint32_t n) {
+        if(!n)
+            return 0;
+        uint8_t count = 0;
+        while(n) {
+            count += n &amp; 1;
+            n &gt;&gt;= 1;
+        }
+        return count;
+    }
+
+
+    vector&lt;int&gt; countBits(int n) {
+        vector&lt;int&gt; res(n+1,0);
+        for(int i = 0; i&lt;=n; ++i) {
+            res[i] = hammingWeight(i);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>Another straight forward approach would be</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+
+
+    vector&lt;int&gt; countBits(int n) {
+        vector&lt;int&gt; res(n+1,0);
+        for(int i = 0; i&lt;=n; ++i) {
+            res[i] = __builtin_popcount(i);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h2>Same Tree</h2>
+<ul>
+<li>[[binaryTree]] [[recursion]] [[dfs]] [[bfs]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(!p &amp;&amp; !q)
+            return true;
+        if(!q || !p)
+            return false;
+
+        if(q-&gt;val != p-&gt;val)
+            return false;
+
+        return isSameTree(p-&gt;left,q-&gt;left) &amp;&amp; isSameTree(p-&gt;right,q-&gt;right);
+    }
+</code></pre>
+
+<ul>
+<li>The above is a dfs approach.</li>
+<li>And the following is a bfs approach.</li>
+</ul>
+<h2>Number of 1 bits</h2>
+<ul>
+<li>[[Bit-Manipulation]] </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    uint8_t hammingWeight(uint32_t n) {
+        if(!n)
+            return 0;
+        uint8_t count = 0;
+        while(n) {
+            count += n &amp; 1;
+            n &gt;&gt;= 1;
+        }
+        return count;
+    }
+};
+</code></pre>
+
+<h2>Longest Common Prefix</h2>
+<ul>
+<li>[[string]] [[trie]]</li>
+<li>One can solve this problem rather easily using the following solution.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    string longestCommonPrefix(vector&lt;string&gt;&amp; strs) {
+        if(strs.empty())
+            return &quot;&quot;;
+        if(strs.size() &lt;= 1)
+            return strs[0];
+        int i = 0;
+        bool flag = true;
+        while(flag) {
+            char cmp = strs[0][i];
+            for(auto&amp; str:strs) {
+                if(str[i] == cmp)
+                    continue;
+                else {
+                    flag = false;
+                    break;
+                }
+            }
+            i++;
+        }
+        if(!i)
+            return &quot;&quot;;
+        return strs[0].substr(0,i-1);
+    }
+};
+</code></pre>
+
+<ul>
+<li>But we have a special data structure when it comes to dealing with strings. The solution to that can be found in [[trie]].</li>
+</ul>
+<h2>Single Number</h2>
+<ul>
+<li>[[Bit-Manipulation]] [[array]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int singleNumber(vector&lt;int&gt;&amp; nums) {
+        if(nums.empty()) 
+            return -1;
+        int ans = 0;
+        for(auto&amp; i:nums)
+            ans ^= i;
+        return ans;
+
+    }
+};
+</code></pre>
+
+<h2>Palindrome Linked List</h2>
+<ul>
+<li>[[stack]] [[recursion]] [[twoPointers]] [[linkedList]] </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        std::stack&lt;int&gt; intstack;
+        ListNode* temp = head;
+        while(temp!=NULL) {
+            intstack.push(temp-&gt;val);
+                temp = temp-&gt;next;
+        }
+
+        while(head != NULL) {
+            if(head-&gt;val != intstack.top())
+                return false;
+            head = head-&gt;next;
+            intstack.pop();
+        }
+
+        return true;
+
+    }
+};
+</code></pre>
+
+<ul>
+<li>We can also use a recursive approach as follows</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isPalindrome(ListNode*&amp; left, ListNode* right) {
+    if (!right) {
+        return true;
+    }
+    bool isPal = isPalindrome(left, right-&gt;next);
+    isPal = isPal &amp;&amp; (left-&gt;val == right-&gt;val);
+    left = left-&gt;next;
+    return isPal;
+}
+
+    bool isPalindrome(ListNode* head) {
+        return isPalindrome(head,head);
+
+    }
+};
+</code></pre>
+
+<h2>Convert Sorted Array to Binary Search Tree</h2>
+<ul>
+<li>[[binaryTree]] [[binarySearchTree]] [[tree]] [[recursion]] [[divideAndConquer]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    TreeNode* makeTree(std::vector&lt;int&gt;&amp; nums,int l,int r) {
+        if(l&gt;r) 
+            return NULL;
+        int mid = l + (r-l)/2;
+        TreeNode* root = new TreeNode(nums[mid]);
+        root-&gt;left = makeTree(nums,l,mid-1);
+        root-&gt;right = makeTree(nums,mid+1,r);
+        return root;
+    }
+    TreeNode* sortedArrayToBST(vector&lt;int&gt;&amp; nums) {
+        if(nums.empty())
+            return NULL;
+        return makeTree(nums,0,nums.size()-1);
+    }
+};
+</code></pre>
+
+<h2>Reverse Bits</h2>
+<ul>
+<li>[[Bit-Manipulation]] [[divideAndConquer]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        int res = 0;
+        int bits = 31;
+        while(bits &gt;= 0) {
+            int currBit = n &amp; 1;
+            res = res | (currBit &lt;&lt; bits);
+            n &gt;&gt;= 1;
+            bits--;
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h2>SubTree of another Tree</h2>
+<ul>
+<li>[[binaryTree]] [[recursion]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">bool isIdentical(TreeNode* s, TreeNode* t) {
+    if (!s &amp;&amp; !t) {
+        return true; 
+    }
+    if (!s || !t) {
+        return false; 
+    }
+
+    return (s-&gt;val == t-&gt;val) &amp;&amp; isIdentical(s-&gt;left, t-&gt;left) &amp;&amp; isIdentical(s-&gt;right, t-&gt;right);
+}
+
+bool isSubtree(TreeNode* s, TreeNode* t) {
+    if (!s) {
+        return false; 
+    }
+    if (isIdentical(s, t)) {
+        return true;
+    }
+    return isSubtree(s-&gt;left, t) || isSubtree(s-&gt;right, t);
+}
+</code></pre>
+
+<ul>
+<li>The bfs approach would be like this</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">bool isIdentical(TreeNode* s, TreeNode* t) {
+    if (!s &amp;&amp; !t) {
+        return true; 
+    }
+    if (!s || !t) {
+        return false;
+    }
+
+    return (s-&gt;val == t-&gt;val) &amp;&amp; isIdentical(s-&gt;left, t-&gt;left) &amp;&amp; isIdentical(s-&gt;right, t-&gt;right);
+}
+
+bool isSubtree(TreeNode* s, TreeNode* t) {
+    if (!s) {
+        return false; 
+    }
+
+    std::queue&lt;TreeNode*&gt; bfsQueue;
+    bfsQueue.push(s);
+
+    while (!bfsQueue.empty()) {
+        TreeNode* currentNode = bfsQueue.front();
+        bfsQueue.pop();
+        if (isIdentical(currentNode, t)) {
+            return true;
+        }
+        if (currentNode-&gt;left) {
+            bfsQueue.push(currentNode-&gt;left);
+        }
+        if (currentNode-&gt;right) {
+            bfsQueue.push(currentNode-&gt;right);
+        }
+    }
+
+    return false; 
+}
+</code></pre>
+
+<h2>Squares of a Sorted Array</h2>
+<pre class="codehilite"><code class="language-cpp">bool isIdentical(TreeNode* s, TreeNode* t) {
+    if (!s &amp;&amp; !t) {
+        return true; 
+    }
+    if (!s || !t) {
+        return false;
+    }
+
+    return (s-&gt;val == t-&gt;val) &amp;&amp; isIdentical(s-&gt;left, t-&gt;left) &amp;&amp; isIdentical(s-&gt;right, t-&gt;right);
+}
+
+bool isSubtree(TreeNode* s, TreeNode* t) {
+    if (!s) {
+        return false; 
+    }
+
+    std::queue&lt;TreeNode*&gt; bfsQueue;
+    bfsQueue.push(s);
+
+    while (!bfsQueue.empty()) {
+        TreeNode* currentNode = bfsQueue.front();
+        bfsQueue.pop();
+        if (isIdentical(currentNode, t)) {
+            return true;
+        }
+        if (currentNode-&gt;left) {
+            bfsQueue.push(currentNode-&gt;left);
+        }
+        if (currentNode-&gt;right) {
+            bfsQueue.push(currentNode-&gt;right);
+        }
+    }
+return false; }
+</code></pre>
+
+<h2>Maximum SubArray</h2>
+<ul>
+<li>This problem would be more interesting if we were asked to find the array that results in the max sum as well.</li>
+<li>But since we only need the sum, we can just store the max at right place and upadate it as needed and then return it.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int maxSubArray(vector&lt;int&gt;&amp; nums) {
+        if(nums.empty())
+            return 0;
+        int max = INT_MIN;
+        int currSum = 0;
+        for(int i = 0; i&lt;nums.size(); i++) {
+            currSum += nums[i];
+            if(currSum &gt; max) 
+                max = currSum;
+            if(currSum &lt; 0)
+                currSum = 0;
+        }    
+        return max;    
+    }
+};
+</code></pre>
+
+<ul>
+<li>Following is an updated version with the same trick as before for speed.</li>
+</ul>
+<h1>pragma GCC optimize("Ofast")</h1>
+<p>static auto _ = [] () {ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);return 0;}();</p>
+<p>class Solution {<br />
+public:<br />
+    int maxSubArray(vector<int>&amp; nums) {<br />
+        if(nums.empty()) return 0;<br />
+        int maxSum = INT_MIN, currSum = 0;<br />
+        for(auto num : nums) {<br />
+            currSum = std::max(num, currSum + num);<br />
+            maxSum = std::max(maxSum,currSum);<br />
+        }<br />
+        return maxSum; <br />
+    }<br />
+};</p>
+<h2>Insert Interval</h2>
+<ul>
+<li>This is also a rather simple problem, we start of by taking all the intervals that will end before the newInterval begins.</li>
+<li>Afterwards we will check if the new interval is overlapping with existing one and update it's value accordingly</li>
+<li>Afterwards we just push all the remaining intervals back and return.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; insert(vector&lt;vector&lt;int&gt;&gt;&amp; intervals, vector&lt;int&gt;&amp; newInterval) {
+        int i = 0;
+        int n = intervals.size();
+        std::vector&lt;std::vector&lt;int&gt;&gt; newIntervals;
+
+        while(i &lt; n &amp;&amp; intervals[i][1] &lt; newInterval[0]) {
+            newIntervals.push_back(intervals[i++]);
+        }
+
+        while(i &lt; n &amp;&amp; intervals[i][0] &lt;= newInterval[1]) {
+            newInterval[0] = std::min(newInterval[0],intervals[i][0]);
+            newInterval[1] = std::max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        newIntervals.push_back(newInterval);
+
+        while(i &lt; n) {
+            newIntervals.push_back(intervals[i++]);
+        }
+        return newIntervals;
+    }
+};
+</code></pre>
+
+<h2>01 Matrix</h2>
+<ul>
+<li>This problem can be by first figuring out where all the zeroes are.</li>
+<li>Once we have them we do a search around them in a matrix where all elements have been initialised with INT_MAX, this allows<br />
+us to compare the value.</li>
+<li>Using this we can figure out the distances of all near by non-zero points and store the value of the distance at those points.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+std::vector&lt;std::vector&lt;int&gt;&gt; updateMatrix(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; matrix) {
+        if (matrix.empty()) {
+            return matrix; 
+        }
+
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+
+        std::vector&lt;std::vector&lt;int&gt;&gt; result(rows, std::vector&lt;int&gt;(cols, INT_MAX));
+
+        std::queue&lt;std::pair&lt;int, int&gt;&gt; bfsQueue;
+        for (int i = 0; i &lt; rows; i++) {
+            for (int j = 0; j &lt; cols; j++) {
+                if (matrix[i][j] == 0) {
+                    result[i][j] = 0;
+                    bfsQueue.push(std::make_pair(i, j));
+                }
+            }
+        }
+        std::vector&lt;int&gt; dr = {-1, 1, 0, 0};
+        std::vector&lt;int&gt; dc = {0, 0, -1, 1};
+        while (!bfsQueue.empty()) {
+            int r = bfsQueue.front().first;
+            int c = bfsQueue.front().second;
+            bfsQueue.pop();
+            for (int dir = 0; dir &lt; 4; dir++) {
+                int newR = r + dr[dir];
+                int newC = c + dc[dir];
+                if (newR &gt;= 0 &amp;&amp; newR &lt; rows &amp;&amp; newC &gt;= 0 &amp;&amp; newC &lt; cols &amp;&amp;
+                    result[newR][newC] &gt; result[r][c] + 1) {
+                    result[newR][newC] = result[r][c] + 1;
+                    bfsQueue.push(std::make_pair(newR, newC));
+                }
+            }
+        }
+
+        return result;
+    }
+};
+</code></pre>
+
+<ul>
+<li>The <strong>dfs</strong> approach will be this </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+std::vector&lt;std::vector&lt;int&gt;&gt; updateMatrix(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; matrix) {
+        if (matrix.empty()) {
+            return matrix;
+        }
+
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        std::vector&lt;std::vector&lt;int&gt;&gt; result(rows, std::vector&lt;int&gt;(cols, INT_MAX));
+        for (int i = 0; i &lt; rows; i++) {
+            for (int j = 0; j &lt; cols; j++) {
+                if (matrix[i][j] == 0) {
+                    dfs(matrix, result, i, j, 0);
+                }
+            }
+        }
+
+        return result;
+    }
+
+private:
+    void dfs(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; matrix, std::vector&lt;std::vector&lt;int&gt;&gt;&amp; result, int r, int c, int distance) {
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+
+        if (r &lt; 0 || r &gt;= rows || c &lt; 0 || c &gt;= cols || distance &gt;= result[r][c]) {
+            return;
+        }
+        result[r][c] = distance;
+
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        for (int dir = 0; dir &lt; 4; dir++) {
+            int newR = r + dr[dir];
+            int newC = c + dc[dir];
+
+            dfs(matrix, result, newR, newC, distance + 1);
+        }
+    }
+};
+</code></pre>
+
+<ul>
+<li>But the above approach will fail due high time complexity</li>
+<li>Interestingly both algorithms have same time complexities theoretically but <strong>bfs</strong> will actually be faster.</li>
+<li>Also in general recursive alogrithms can fail if they reach recursive depth, there's only so much you cpu can keep track of.</li>
+</ul>
+<h2>K Closest Points to origin</h2>
+<ul>
+<li>A straight forward approach would be </li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    float _getdist(float x,float y) {
+        return std::sqrt(pow(x,2)+pow(y,2));
+    }
+    vector&lt;vector&lt;int&gt;&gt; kClosest(vector&lt;vector&lt;int&gt;&gt;&amp; points, int k) {
+        std::map&lt;float,std::vector&lt;vector&lt;int&gt;&gt;&gt; pointMap;
+        vector&lt;vector&lt;int&gt;&gt; res;
+        for(auto&amp; point:points) {
+            float dist = _getdist(point[0],point[1]);
+            if(pointMap.find(dist) != pointMap.end()) {
+                pointMap[dist].push_back(point);
+                continue;
+            }
+            pointMap[dist].push_back(point);
+        }
+        auto it = pointMap.begin();
+        int i = 0;
+        while(i&lt;k) {
+            auto vec = it-&gt;second;
+            for(auto v:vec) {
+                res.push_back(v); i++; 
+                if(!(i&lt;k))
+                    break;
+            }
+            it++;
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<ul>
+<li>This is simply calculating the distances that are around and returning the k closest points.</li>
+<li>A cooler solution would be</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">struct CompareDistance {
+    bool operator()(const std::pair&lt;int, int&gt;&amp; p1, const std::pair&lt;int, int&gt;&amp; p2) {
+        return (p1.first * p1.first + p1.second * p1.second) &gt;
+               (p2.first * p2.first + p2.second * p2.second);
+    }
+};
+
+class Solution {
+public:
+    std::vector&lt;std::vector&lt;int&gt;&gt; kClosest(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; points, int k) {
+        // Create a priority queue to store points sorted by distance from origin
+        std::priority_queue&lt;std::pair&lt;int, int&gt;, std::vector&lt;std::pair&lt;int, int&gt;&gt;, CompareDistance&gt; pq;
+
+        // Push the first K points into the priority queue
+        for (int i = 0; i &lt; k; i++) {
+            pq.push({points[i][0], points[i][1]});
+        }
+
+        // Continue iterating through the remaining points and update the queue if closer points are found
+        for (int i = k; i &lt; points.size(); i++) {
+            int dist = points[i][0] * points[i][0] + points[i][1] * points[i][1];
+            int maxDist = pq.top().first * pq.top().first + pq.top().second * pq.top().second;
+
+            if (dist &lt; maxDist) {
+                pq.pop();
+                pq.push({points[i][0], points[i][1]});
+            }
+        }
+
+        // Extract the K closest points from the priority queue
+        std::vector&lt;std::vector&lt;int&gt;&gt; result;
+        while (!pq.empty()) {
+            result.push_back({pq.top().first, pq.top().second});
+            pq.pop();
+        }
+
+        return result;
+    }
+};
+</code></pre>
+
+<h2>Longest Substring Without Repeating Characters</h2>
+<ul>
+<li>[[slidingWindow]] [[string]] [[hashMap]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        std::set&lt;char&gt; memory;
+        int rightSide=0, leftSide=0;
+        int maxLen = 0;
+        while(rightSide &lt; s.size()) {
+            if(memory.find(s[rightSide]) == memory.end()) {
+                    memory.insert(s[rightSide++]);
+            }
+            else {
+                memory.erase(s[leftSide++]);
+            }
+            maxLen = std::max(maxLen,rightSide - leftSide);
+
+        }
+        return maxLen;
+    }
+};
+</code></pre>
+
+<h2>3Sum</h2>
+<ul>
+<li>[[array]] [[twoPointers]] [[sorting]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    std::vector&lt;std::vector&lt;int&gt;&gt; threeSum(std::vector&lt;int&gt;&amp; nums) {
+    std::vector&lt;std::vector&lt;int&gt;&gt; result;
+    int n = nums.size();
+
+    if (n &lt; 3) {
+        return result; 
+    }
+
+    // Sort the input array.
+    std::sort(nums.begin(), nums.end());
+
+    for (int i = 0; i &lt; n - 2; i++) {
+        // Avoid duplicates.
+        if (i &gt; 0 &amp;&amp; nums[i] == nums[i - 1]) {
+            continue;
+        }
+
+        int target = -nums[i];
+        int left = i + 1;
+        int right = n - 1;
+
+        while (left &lt; right) {
+            int sum = nums[left] + nums[right];
+            if (sum == target) {
+                result.push_back({nums[i], nums[left], nums[right]});
+                // Avoid duplicates.
+                while (left &lt; right &amp;&amp; nums[left] == nums[left + 1]) left++;
+                while (left &lt; right &amp;&amp; nums[right] == nums[right - 1]) right--;
+                left++;
+                right--;
+            } else if (sum &lt; target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+    return result;
+}
+};
+</code></pre>
+
+<h2>Binary Tree Level Order Traversal</h2>
+<ul>
+<li>[[binaryTree]] [[bfs]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    vector&lt;vector&lt;int&gt;&gt; levelOrder(TreeNode* root) {
+        if(!root)
+            return {};
+
+        std::vector&lt;std::vector&lt;int&gt;&gt; res;
+        std::queue&lt;TreeNode*&gt; nq;
+        nq.push(root);
+        while(!nq.empty()) {
+            int N = nq.size();
+            std::vector&lt;int&gt; temp;
+            for(int i = 0; i&lt;N;i++) {
+                TreeNode* curr = nq.front(); nq.pop();
+                temp.push_back(curr-&gt;val);
+                if(root-&gt;right)
+                    nq.push(root-&gt;right);
+                if(root-&gt;left)
+                    nq.push(root-&gt;left);
+            } res.push_back(temp);
+        }
+        return res;
+    }
+};
+</code></pre>
+
+<h2>Clone Graph</h2>
+<ul>
+<li>[[hashMap]] [[bfs]] [[dfs]] [[graph]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector&lt;Node*&gt; neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector&lt;Node*&gt;();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector&lt;Node*&gt;();
+    }
+    Node(int _val, vector&lt;Node*&gt; _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+public:
+    std::unordered_map&lt;Node*, Node*&gt; visited;
+
+Node* cloneGraph(Node* node) {
+    if (!node) {
+        return nullptr; // Return nullptr for an empty graph.
+    }
+
+    // If the node has already been cloned, return its clone.
+    if (visited.find(node) != visited.end()) {
+        return visited[node];
+    }
+
+    // Create a clone of the current node.
+    Node* cloneNode = new Node(node-&gt;val);
+
+    // Mark the node as visited and store its clone.
+    visited[node] = cloneNode;
+
+    // Recursively clone all neighbors of the current node.
+    for (Node* neighbor : node-&gt;neighbors) {
+        cloneNode-&gt;neighbors.push_back(cloneGraph(neighbor));
+    }
+
+    return cloneNode;
+}
+};
+</code></pre>
+
+<h2>Min Stack</h2>
+<ul>
+<li>Too easy</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class MinStack {
+public:
+    typedef struct node{
+        int v;
+        int minUntilNow;
+        node* next;
+    }node;
+
+    MinStack() : topN(nullptr){
+
+    }
+
+    void push(int val) {
+        node* n = new node;
+        n-&gt;v = n-&gt;minUntilNow = val;
+        n-&gt;next = nullptr;
+
+        if(topN == nullptr){
+            topN = n;
+        }
+
+        else{
+            n-&gt;minUntilNow = min(n-&gt;v,topN-&gt;minUntilNow);
+            n-&gt;next = topN;
+            topN = n;
+        }
+    }
+
+    void pop() {
+        topN = topN-&gt;next;
+    }
+
+    int top() {
+        return topN-&gt;v;
+    }
+
+    int getMin() {
+        return topN-&gt;minUntilNow;
+    }
+
+    private:
+    node* topN;
+};
+</code></pre>
+
+<h2>Evaluate Reverse Polish Notation</h2>
+<ul>
+<li>[[math]] [[stack]] [[arra]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isNum(const std::string&amp; s) {
+    std::istringstream ss(s);
+    double num;
+    return (ss &gt;&gt; num) &amp;&amp; ss.eof();
+    }
+
+    int calc(std::stack&lt;int&gt;&amp; s, std::string op) {
+        int a = s.top(); s.pop();
+        int b = s.top(); s.pop();
+        if(op == &quot;*&quot;)
+            return b*a;
+        if(op == &quot;/&quot;)
+            return b/a;
+        if(op == &quot;-&quot;)
+            return b-a;
+        if(op == &quot;+&quot;)
+            return b+a;
+        return 0;
+    }
+
+
+    int evalRPN(vector&lt;string&gt;&amp; tokens) {
+        std::stack&lt;int&gt; stk;
+
+        for(auto&amp; s:tokens) {
+            if(isNum(s)) {
+                stk.push(atoi(s.c_str()));
+            }
+            else {
+                stk.push(calc(stk, s));
+            }
+
+        }
+        return stk.top();
+
+    }
+};
+</code></pre>
+
+<h2>Course Schedule</h2>
+<ul>
+<li>[[topological sorting]] [[Khan's Algorithm]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool canFinish(int numCourses, std::vector&lt;std::vector&lt;int&gt;&gt;&amp; prerequisites) {
+    std::vector&lt;std::vector&lt;int&gt;&gt; graph(numCourses);
+    std::vector&lt;int&gt; inDegree(numCourses, 0);
+    for (const auto&amp; prerequisite : prerequisites) {
+        int course = prerequisite[0];
+        int prereq = prerequisite[1];
+        graph[prereq].push_back(course);
+        inDegree[course]++;
+    }
+    std::queue&lt;int&gt; q;
+    for (int i = 0; i &lt; numCourses; i++) {
+        if (inDegree[i] == 0) {
+            q.push(i);
+        }
+    }
+    while (!q.empty()) {
+        int course = q.front();
+        q.pop();
+        numCourses--;
+        for (int dependentCourse : graph[course]) {
+            if (--inDegree[dependentCourse] == 0) {
+                q.push(dependentCourse);
+            }
+        }
+    }
+    return numCourses == 0;
+}
+};
+</code></pre>
+
+<h2>Implement Trie</h2>
+<ul>
+<li>Just simply implement the datastructure</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class TrieNode {
+public:
+    std::unordered_map&lt;char, TrieNode*&gt; children;
+    bool isEndOfWord;
+
+    TrieNode() {
+        isEndOfWord = false;
+    }
+};
+
+
+class Trie {
+private:
+    TrieNode* root;
+public:
+    Trie() {
+        root = new TrieNode(); 
+    }
+
+    void insert(string word) {
+        TrieNode* node = root;
+        for(auto c : word) {
+            if(!node-&gt;children[c]) {
+                node-&gt;children[c] = new TrieNode();
+            }
+            node = node-&gt;children[c];
+        }
+        node-&gt;isEndOfWord = true;
+    }
+
+    bool search(string word) {
+        TrieNode* node = root;
+        for(auto c: word) {
+            if(!node-&gt;children[c])
+                return false;
+            node = node-&gt;children[c];
+        }
+        return node-&gt;isEndOfWord;
+    }
+
+    bool startsWith(string prefix) {
+        TrieNode* node = root;
+        for(auto c: prefix) {
+            if(!node-&gt;children[c])
+                return false;
+            node = node-&gt;children[c];
+        }
+        return true;
+
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj-&gt;insert(word);
+ * bool param_2 = obj-&gt;search(word);
+ * bool param_3 = obj-&gt;startsWith(prefix);
+ */
+</code></pre>
+
+<h2>Coin Change</h2>
+<ul>
+<li>There are multiple ways to solve this problem, following is a <strong>dfs</strong> approach, but it will fail due to over recursion.</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    void dfs(std::vector&lt;int&gt;&amp; coins, int amount, int currentAmount, int&amp; minCoins, int&amp; currentCoins) {
+    if (currentAmount == 0) {
+        minCoins = std::min(minCoins, currentCoins);
+        return;
+    }
+
+    if (currentAmount &lt; 0 || currentCoins &gt;= minCoins) {
+        return;
+    }
+
+    for (int coin : coins) {
+        currentCoins++;
+        dfs(coins, amount, currentAmount - coin, minCoins, currentCoins);
+        currentCoins--;
+    }
+}
+
+int coinChange(std::vector&lt;int&gt;&amp; coins, int amount) {
+    int minCoins = amount + 1; 
+    int currentCoins = 0;
+
+    dfs(coins, amount, amount, minCoins, currentCoins);
+
+    return (minCoins &gt; amount) ? -1 : minCoins;
+}
+
+};
+</code></pre>
+
+<ul>
+<li>Following is a <strong>bfs</strong> approach</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int coinChange(std::vector&lt;int&gt;&amp; coins, int amount) {
+    std::queue&lt;int&gt; q;
+    std::vector&lt;bool&gt; visited(amount + 1, false);
+
+    q.push(amount);
+    visited[amount] = true;
+    int level = 0; 
+    while (!q.empty()) {
+        int size = q.size();
+
+        for (int i = 0; i &lt; size; i++) {
+            int currentAmount = q.front();
+            q.pop();
+
+            if (currentAmount == 0) {
+                return level; 
+            }
+
+            for (int coin : coins) {
+                int nextAmount = currentAmount - coin;
+
+
+                if (nextAmount &gt;= 0 &amp;&amp; !visited[nextAmount]) {
+                    q.push(nextAmount);
+                    visited[nextAmount] = true;
+                }
+            }
+        }
+
+        level++; 
+    }
+
+    return -1; 
+}
+};
+</code></pre>
+
+<ul>
+<li>And below is the iterative approach</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">int coinChange(std::vector&lt;int&gt;&amp; coins, int amount) {
+
+    std::vector&lt;int&gt; dp(amount + 1, amount + 1);
+
+    dp[0] = 0;
+
+
+    for (int i = 1; i &lt;= amount; i++) {
+        for (int coin : coins) {
+            if (coin &lt;= i) {
+                dp[i] = std::min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+
+
+    return (dp[amount] &gt; amount) ? -1 : dp[amount];
+}
+</code></pre>
+
+<h2>Product of Array except Self</h2>
+<h2>Validate Binary Search Tree</h2>
+<ul>
+<li>[[binaryTree]] [[recursion]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        if(root &amp;&amp; !root-&gt;right &amp;&amp; !root-&gt;left)
+            return true;
+        else if(!root-&gt;left &amp;&amp; root-&gt;right)
+            return isValidBST(root-&gt;right);
+        else if(!root-&gt;right &amp;&amp; root-&gt;left)
+            return isValidBST(root-&gt;left);
+        else if(root-&gt;val &gt;= root-&gt;right-&gt;val || root-&gt;val &lt;= root-&gt;left-&gt;val)
+            return false;
+        return isValidBST(root-&gt;right) &amp;&amp; isValidBST(root-&gt;left);
+    }
+};
+</code></pre>
+
+<h2>Number Of Islands</h2>
+<ul>
+<li>[[graph]] [[dfs]] [[bfs]] [[unionFind]] [[matrix]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int numIslands(std::vector&lt;std::vector&lt;char&gt;&gt;&amp; grid) {
+        if (grid.empty() || grid[0].empty()) {
+            return 0; // Empty grid has no islands.
+        }
+
+        int numIslands = 0;
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        for (int i = 0; i &lt; rows; i++) {
+            for (int j = 0; j &lt; cols; j++) {
+                if (grid[i][j] == '1') {
+                    numIslands++;
+                    dfs(grid, i, j);
+                }
+            }
+        }
+
+        return numIslands;
+    }
+
+private:
+    void dfs(std::vector&lt;std::vector&lt;char&gt;&gt;&amp; grid, int row, int col) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+
+        if (row &lt; 0 || row &gt;= rows || col &lt; 0 || col &gt;= cols || grid[row][col] == '0') {
+            return; // Out of bounds or water cell, stop recursion.
+        }
+
+        // Mark the current cell as visited.
+        grid[row][col] = '0';
+
+        // Recursively explore neighboring cells.
+        dfs(grid, row - 1, col); // Up
+        dfs(grid, row + 1, col); // Down
+        dfs(grid, row, col - 1); // Left
+        dfs(grid, row, col + 1); // Right
+    }
+};
+</code></pre>
+
+<h2>Rotating Oranges</h2>
+<ul>
+<li>[[array]] [[bfs]] [[matrix]]</li>
+</ul>
+<pre class="codehilite"><code class="language-cpp">class Solution {
+public:
+    int orangesRotting(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int minutes = 0;
+
+        std::queue&lt;std::pair&lt;int, int&gt;&gt; rottenQueue;
+
+        // Count the number of fresh oranges and add rotten oranges to the queue.
+        int freshOranges = 0;
+        for (int i = 0; i &lt; rows; i++) {
+            for (int j = 0; j &lt; cols; j++) {
+                if (grid[i][j] == 2) {
+                    rottenQueue.push({i, j});
+                } else if (grid[i][j] == 1) {
+                    freshOranges++;
+                }
+            }
+        }
+
+        // Define possible directions to adjacent cells.
+        std::vector&lt;std::pair&lt;int, int&gt;&gt; directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        while (!rottenQueue.empty() &amp;&amp; freshOranges &gt; 0) {
+            int queueSize = rottenQueue.size();
+
+            for (int i = 0; i &lt; queueSize; i++) {
+                std::pair&lt;int, int&gt; curr = rottenQueue.front();
+                rottenQueue.pop();
+
+                for (const auto&amp; direction : directions) {
+                    int newRow = curr.first + direction.first;
+                    int newCol = curr.second + direction.second;
+
+                    if (newRow &gt;= 0 &amp;&amp; newRow &lt; rows &amp;&amp; newCol &gt;= 0 &amp;&amp; newCol &lt; cols &amp;&amp;
+                        grid[newRow][newCol] == 1) {
+                        grid[newRow][newCol] = 2; // Mark the adjacent fresh orange as rotten.
+                        rottenQueue.push({newRow, newCol});
+                        freshOranges--;
+                    }
+                }
+            }
+
+            if (!rottenQueue.empty()) {
+                minutes++; // Increment the minute if there are more rotten oranges.
+            }
+        }
+
+        return (freshOranges == 0) ? minutes : -1; // Return -1 if some oranges remain fresh.
+    }
+};
+</code></pre>
+      </div>
+    </article>
+  </div>
+  
+  <script src="../../assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>

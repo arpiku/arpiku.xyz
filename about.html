@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | arpiku</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <style>
+    .about-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid var(--gray);
+    }
+    
+    .about-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(204, 34, 34, 0.3);
+    }
+    
+    .about-title {
+      font-family: var(--headline-font);
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 20px rgba(204, 34, 34, 0.3);
+    }
+    
+    .about-subtitle {
+      color: var(--white-dim);
+      font-family: var(--headline-font);
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    
+    .resume-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--white);
+      text-decoration: none;
+      font-family: var(--body-font);
+      font-weight: 500;
+      font-size: 1.1rem;
+      padding: 0.8rem 1.5rem;
+      border: 3px solid var(--red);
+      border-radius: 8px;
+      background: var(--content-bg);
+      transition: all 0.2s ease;
+      margin-bottom: 2rem;
+    }
+    
+    .resume-btn:hover {
+      background: var(--red);
+      box-shadow: 0 0 25px rgba(204, 34, 34, 0.5);
+    }
+    
+    .about-body {
+      font-family: var(--body-font);
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--white);
+      background: var(--content-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid var(--gray);
+    }
+    
+    .about-body p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .about-body a {
+      color: var(--red-bright);
+      text-decoration: none;
+      border-bottom: 1px solid var(--red);
+      transition: all 0.2s ease;
+    }
+    
+    .about-body a:hover {
+      color: var(--white);
+      background: var(--red);
+    }
+    
+    .skills-section {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--black-light);
+      border: 1px solid var(--gray);
+      border-radius: 10px;
+    }
+    
+    .skills-title {
+      font-family: var(--headline-font);
+      font-size: 1.5rem;
+      color: var(--red-bright);
+      margin-bottom: 1rem;
+    }
+    
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .skill-tag {
+      font-family: var(--mono-font);
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--gray-light);
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: var(--white-dim);
+      background: var(--black);
+    }
+    
+    @media (max-width: 768px) {
+      .about-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .about-title {
+        font-size: 2rem;
+      }
+      
+      .about-body {
+        font-size: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="index.html" class="back-link">← Home</a>
+    
+    <header class="about-header">
+      <img src="assets/logo.jpg" alt="arpiku logo" class="about-logo">
+      <div>
+        <h1 class="about-title">ARP</h1>
+        <p class="about-subtitle">// engineering & physics</p>
+      </div>
+    </header>
+    
+    <a href="assets/Resume.pdf" class="resume-btn" target="_blank">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>
+      View Resume
+    </a>
+    
+    <div class="about-body">
+      <p>
+        Born in the vibrant and beautiful land of India, I always found the magic of a remote control car just as mysterious 
+        as the one in Harry Potter, growing up I have realised that the Harry Potter world was always considerably behind us.
+      </p>
+      
+      <p>
+        I truly enjoy the beauty of engineering and consistently find myself enthralled by the majestic nature of modern 
+        technology, further the fact that I just have the ability to go ahead and learn about all this magic is well .... magical!
+      </p>
+      
+      <p>
+        Software engineering is the field that I have been able to practice the most but I have dabbled in CAD modeling, 
+        CFD simulation, Electronics engineering (Have done a lot bad soldering jobs). My primary education was in Physics 
+        and I am lucky enough to have received it from one of the most prestigious institutes in my nation, 
+        <a href="https://www.iitr.ac.in" target="_blank" rel="noopener">Indian Institute of Technology Roorkee</a>.
+      </p>
+      
+      <p>
+        I wish to be able to grow and polish my art of engineering and be able to employ it to provide value to my 
+        family and friends while being able to teach it to as many people I can.
+      </p>
+      
+      <div class="skills-section">
+        <h3 class="skills-title">Skills & Interests</h3>
+        <div class="skills-list">
+          <span class="skill-tag">Software Engineering</span>
+          <span class="skill-tag">Physics</span>
+          <span class="skill-tag">CAD Modeling</span>
+          <span class="skill-tag">CFD Simulation</span>
+          <span class="skill-tag">Electronics</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Haskell</span>
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">WebGL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awesome Functional Programming Resources | arpiku</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="icon" href="../../assets/logo.png">
+</head>
+<body>
+  <canvas id="gol-canvas"></canvas>
+  
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+      <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+    </svg>
+    <svg class="moon-icon" viewBox="0 0 24 24">
+      <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+    </svg>
+  </button>
+  
+  <div class="page-content">
+    <a href="../index.html" class="back-link">← Back to Blog</a>
+    
+    <article>
+      <header class="post-header">
+        <div class="post-date">2024-06-28 20:45:00</div>
+        <h1 class="post-title">Awesome Functional Programming Resources</h1>
+        <div class="post-tags">
+          <span class="post-tag">Category Theory</span> <span class="post-tag">Haskell</span> <span class="post-tag">Functional Programming</span>
+        </div>
+      </header>
+      
+      <div class="post-body">
+        <h1>Awesome Functional Programming Stuff</h1>
+<p>So somewhere along the line I started using nixOS that resulted me having a serious look into functional programming and before I knew it<br />
+I was deep into reading research papers on type theory 😮‍💨.  Welp! here are some the cool corners of internet I have found on the journey that can<br />
+help you learn functional programming too or at least help you get lost in theory and mathematics of it all. Enjoy!</p>
+<h2>Lambda Calculus</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus</a></li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Lambda_calculus">Video Lambda Calculus Primer</a><br />
+This wikipedia pages introduction is good enough, it might seem a bit confusing at first, therefore below are some links to practices exercies to understand<br />
+the concept a bit better.</p>
+</li>
+<li>
+<p><a href="https://www.cs.umd.edu/class/fall2017/cmsc330/tests/prac8-soln-fall13.pdf">Lambda Calc Doc 1</a></p>
+</li>
+<li><a href="https://www.cs.rochester.edu/u/brown/173/exercises/functional/lambda/lambda_ex1.pdf">Lambda Calc Doc 2</a></li>
+</ul>
+<p>I would also suggest to give the Wikipedia page for combinatorial logic a glance as having these mental contructs can help later on in understanding <br />
+a lot of jargon that may be thrown around while discussing functional programming.</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Combinatory_logic">Combinatory Logic</a></li>
+</ul>
+<h2>Category Theory</h2>
+<ul>
+<li>
+<p>[Category Theory Lectures] (https://www.youtube.com/watch?v=I8LbkfSSR58&amp;list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_<br />
+This is an awesome lecture series on the topic, there are 2 more levels availble on Mr.Bartosz Milewski channel, but I defenetly would suggest that go<br />
+through the first part atleast, the other two basically continue the ideas introduced into the first part to higher levels though if you are trying to<br />
+code in Haskell the first series should give you enough of a primer to get more intutive feeling around types and how to use them.</p>
+</li>
+<li>
+<p>[ncatlab] (https://ncatlab.org/nlab/show/HomePage)<br />
+A rather general site that covers many areas from mathematics and philosophy and such, they have a wide collection of articles on topics of Category theory, even if I hadn't mentioned this website here, you probably would come across this website multiple times trying to understand category theory and<br />
+Haskell.</p>
+</li>
+</ul>
+<p>Following are wikipedia pages on Monad, Monoid, Product and Sum types in Category theory, I found myself coming back to them to see the diagram chases to<br />
+develop a better understanding around Category theory.<br />
+- [Sum Type (Co-Product)] (https://en.wikipedia.org/wiki/Coproduct)<br />
+- <a href="https://en.wikipedia.org/wiki/Product_type">Product Type</a><br />
+- <a href="https://en.wikipedia.org/wiki/Monad_(category_theory)">Monad</a><br />
+- <a href="https://en.wikipedia.org/wiki/Monoid_(category_theory)">Monoid</a></p>
+<h2>Research Papers</h2>
+<p>Some classics of functional programming world that you should read, as they are the direct sources of a lot of functional programming ideas, and as it <br />
+is with a lot of things going directly to the source can really result in some quality dense information gathering and learning.</p>
+<ul>
+<li><a href="https://www.cse.chalmers.se/~rjmh/Papers/arrows.pdf">Generalising Monads to Arrows</a></li>
+<li>[The Essence of the Iterator Pattern](https://www.cs.ox.ac.uk/jeremy.gibbons/publications/iterator.pdf</li>
+<li>[Fun with type Functions](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/typefun.pdf?from=https://research.microsoft.com/~simonpj/papers/assoc-types/fun-with-type-funs/typefun.pdf&amp;type=exact</li>
+</ul>
+<p>The following are "Lambda the Ultimate Papers", I found about them by watchin this awesome video - https://www.youtube.com/watch?v=uR_VzYxvbxg&amp;t=2155s<br />
+which discusses how simple the core of Haskell actually is.<br />
+Anyways here are the papers:</p>
+<ul>
+<li><a href="https://dspace.mit.edu/bitstream/handle/1721.1/5794/AIM-349.pdf">Scheme: An Interpreter For Extended Lambda Calculus</a></li>
+<li>[Lambda : The Ultimate Imperative] (https://apps.dtic.mil/sti/pdfs/ADA030751.pdf)</li>
+<li>[Lambda : The Ultimate Declarative] (https://apps.dtic.mil/sti/pdfs/ADA034090.pdf)</li>
+<li>[Lambda : The Ultimate GOTO] (https://apps.dtic.mil/sti/pdfs/ADA062381.pdf)</li>
+<li>[The Art of the Interpreter or, the Modularity Complex] (https://dspace.mit.edu/bitstream/handle/1721.1/6094/AIM-453.pdf)</li>
+<li>
+<p>[Rabbit: A compiler for Scheme] (https://dspace.mit.edu/bitstream/handle/1721.1/6913/AITR-474.pdf)</p>
+</li>
+<li>
+<p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2005/01/2005-ppopp-composable.pdf">Software Transaction Memory</a></p>
+</li>
+</ul>
+<h2>Some Awesome Haskell Resources:</h2>
+<ul>
+<li>
+<p>[learnyouahakell] (https://learnyouahaskell.com/chapters)<br />
+This is the first book that I read on Haskell, I cannot appreiciate enough the simplicity with which the author has approached the topic, especially with<br />
+all the cute doodles, this is defenitely a book that shows how Haskell is actually a lanugage for kids due to it's inherent simplicity and is infact not<br />
+as complicated as people belive it to be.</p>
+</li>
+<li>
+<p><a href="https://book.realworldhaskell.org">realworldHaskell</a><br />
+Another awesome book made freely available by the authors, some really smart code snippets are preseneted here that show the compactness and power of Haskell.</p>
+</li>
+<li>
+<p><a href="https://wiki.haskell.org/Category:Idioms">Idioms</a><br />
+These are various topics related to Haskell, I like them because exploring these pages introduces me to a lot of new theortical concepts and their<br />
+direct implementation in Haskell, again some really awesome code snippets are presented that can really help you get a feel of the possiblities with Haskell code.</p>
+</li>
+<li>
+<p>[Haskell 2010 Report] (https://www.haskell.org/onlinereport/haskell2010/)<br />
+This is the original documentation of Haskel2010 report, it may seem a lot to include it, but actually the report is actually fairly simple, and the<br />
+technical details can easily be understood, infact it reads more like a simple book that anyone can sort of glance through and achieve a rather deep look in Haskell under the hood.</p>
+</li>
+</ul>
+<p>And that's pretty much it, I hopefully will update this in future as there is still some stuff I perusing through.</p>
+      </div>
+    </article>
+  </div>
+  
+  <script src="../../assets/js/gol.js"></script>
+  <script>
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = toggle.querySelector('.sun-icon');
+      const moonIcon = toggle.querySelector('.moon-icon');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateIcon(savedTheme);
+      function updateIcon(theme) {
+        if (theme === 'light') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+      toggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+    })();
+  </script>
+</body>
+</html>
